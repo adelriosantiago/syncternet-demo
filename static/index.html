@@ -10,15 +10,40 @@
       integrity="sha512-B4skI5FiLurS86aioJx9VfozI1wjqrn6aTdJH+YQUmCZum/ZibPBTX55k5d9XM6EsKePDInkLVrN7vPmJxc1qA=="
       crossorigin="anonymous"
     ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/cash/8.1.0/cash.min.js"
+      integrity="sha512-sgDgZX/GgfD7qSeMjPN/oE9EQgXZJW55FIjdexVT60QerG2gAWhR9QDQEGt3O90Dy9jVcwMWsoTMhLgldIiKXw=="
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
     <div>
-      <input bd-value="word" />
+      <input bd-value="'123' + word" bd-model="word" />
     </div>
     <script>
       const socket = new ReconnectingWebSocket("ws://localhost:3080")
       console.log("socket", socket)
+
+      let scope = {}
+
+      socket.onopen = () => {
+        console.log("onopen")
+      }
+      socket.onerror = (error) => {
+        console.log(`WebSocket error: ${error}`)
+      }
+      socket.onmessage = (msg) => {
+        msg = JSON.parse(msg.data)
+        scope[msg.p] = msg.v
+        console.log("scope", scope)
+      }
+
+      $("[bd-model='word']").on("input", (ev) => {
+        const el = ev.target
+        console.log("about to send", el.value)
+        socket.send(JSON.stringify({ p: "word", v: ev.target.value }))
+      })
     </script>
   </body>
 </html>
