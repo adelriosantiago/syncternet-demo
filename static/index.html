@@ -15,20 +15,41 @@
       integrity="sha512-sgDgZX/GgfD7qSeMjPN/oE9EQgXZJW55FIjdexVT60QerG2gAWhR9QDQEGt3O90Dy9jVcwMWsoTMhLgldIiKXw=="
       crossorigin="anonymous"
     ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/acorn/6.4.2/acorn.min.js"
+      integrity="sha512-5McC9yHdohQSaKZHRkGbyD84OUdkgK8Cv89km3Tb8zA2ns9yyDU3yOPLeYB2X6NzM4qbu7rpjFUftjf5X/z0SQ=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/acorn-walk/6.2.0/walk.min.js"
+      integrity="sha512-Q57dc6D3mm13he5p7wUxJsTSRsETCo0Z/SU9u9YfKRiuWGsx7U02+tCpgaUUi4RJ8rQB2DofcWqXbvgBLCUcSQ=="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash.topath@4.5.2/index.js"></script>
   </head>
 
   <body>
     <div>
       <input bd-model="word" />
       <input bd-model="thing" />
+      <div bd-class="'my other classes' + word">class</div>
+      <div bd-html="'sample ' + word + ' & ' + thing">href</div>
     </div>
     <script>
       const socket = new ReconnectingWebSocket("ws://localhost:3080")
 
+      const attrCalculables = {
+        "bd-id": "id",
+        "bd-class": "className",
+        "bd-html": "innerHTML",
+        "bd-src": "src",
+      }
+
       let scope = {}
       let domScope = {}
+      let calcScope = {} // For processing calc changes (flat structure)
 
-      // Create scope vars
+      // Create model variables
       $("[bd-model]").each((i, el) => {
         const path = el.getAttribute("bd-model")
         scope[path] = ""
@@ -43,6 +64,33 @@
         })
       })
 
+      const processCalculable = (path, attr, attrVal, el) => {
+        if (!Array.isArray(calcScope[path])) calcScope[path] = []
+        calcScope[path].push(() => {
+          el[attrCalculables[attr]] = new Function("sandbox", `with (sandbox) {const r = ${attrVal}; return r;}`)(scope)
+        })
+      }
+
+      // Create calculable variables
+      Object.keys(attrCalculables).forEach((attr) => {
+        $(`[${attr}]`).each((i, el) => {
+          const attrVal = el.getAttribute(attr)
+          const pathObj = acorn.parse(attrVal, { ecmaVersion: 8 })
+
+          acorn.walk.simple(pathObj, {
+            Identifier(node) {
+              const path = node.name
+              processCalculable(path, attr, attrVal, el)
+            },
+            MemberExpression(node) {
+              const path = astring.generate(node)
+              processCalculable(path, attr, attrVal, el)
+            },
+          })
+        })
+      })
+
+      // Socket events
       socket.onopen = () => {
         console.log("onopen")
       }
@@ -52,12 +100,20 @@
       socket.onmessage = (msg) => {
         msg = JSON.parse(msg.data)
         scope[msg.p] = msg.v
-        console.log("scope", scope)
 
-        if (domScope[msg.p] === undefined) return
-        domScope[msg.p].forEach((o) => {
-          o(scope[msg.p])
-        })
+        // Update scope and dom with bd-model
+        if (domScope[msg.p] !== undefined) {
+          domScope[msg.p].forEach((o) => {
+            o(scope[msg.p])
+          })
+        }
+
+        // Update calculables (doms all other than bd-model)
+        if (domScope[msg.p] !== undefined) {
+          calcScope[msg.p].forEach((o) => {
+            o()
+          })
+        }
       }
     </script>
   </body>
