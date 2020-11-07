@@ -25,16 +25,30 @@
       integrity="sha512-Q57dc6D3mm13he5p7wUxJsTSRsETCo0Z/SU9u9YfKRiuWGsx7U02+tCpgaUUi4RJ8rQB2DofcWqXbvgBLCUcSQ=="
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js" integrity="sha512-90vH1Z83AJY9DmlWa8WkjkV79yfS2n2Oxhsi2dZbIv0nC4E6m5AbH8Nh156kkM7JePmqD6tcZsfad1ueoaovww==" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/astring@1.4.3/dist/astring.min.js"></script>
   </head>
 
   <body>
     <div>
-      <input bd-model="word" />
       <input bd-model="thing" />
+      <div bd-html="thing"></div>
+      <br/>
+      <br/>
+      <br/>
+      <input bd-model="word" />
       <div bd-class="'my other classes' + word">class</div>
       bd-content: <div bd-content="'sample ' + word + ';;;'">href</div></br/>
       bd-html: <div bd-html="'sample ' + word + ';;;'">href</div></br/>
       bd-dangerous-html: <div bd-dangerous-html="'sample ' + word + ';;;'">href</div></br/>
+      <br/>
+      <br/>
+      <br/>
+      <input bd-model="data.name" />
+      <div bd-html="data.name"></div>
+      <br/>
+      <br/>
+      <br/>
     </div>
     <script>
       const socket = new ReconnectingWebSocket("ws://localhost:3080")
