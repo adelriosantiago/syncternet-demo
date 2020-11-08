@@ -17,8 +17,8 @@ app.get("/exampleGetScope", (req, res) => {
 const server = http.createServer(app)
 
 let scope = {
-  word: "starting word",
   thing: "red bold",
+  word: "starting word",
   bool: false,
   number: 4,
   data: {
