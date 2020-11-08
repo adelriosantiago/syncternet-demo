@@ -1,3 +1,4 @@
 # boydog no OT
 
-This will be the pipeline: html->scope->server->scope->html, if a change in "scope" happens, it will *not* feed into "html", it follows the normal process.
+This will be the pipeline: on html update -> front flat scope -> server scope -> update front flat scope (if different) -> update html.
+There is a scope in html and it is flat. The server scope is deep.

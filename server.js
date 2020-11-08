@@ -18,13 +18,13 @@ const server = http.createServer(app)
 
 let scope = {
   word: "starting word",
-  title: "initial title",
-  subject: "random subject",
   thing: "red bold",
   bool: false,
   number: 4,
   data: {
     name: "John Doe",
+    "qwe.zxc": "with dot",
+    "abc[2]": "with brackets",
     address: "74 Henry Road",
   },
 }
