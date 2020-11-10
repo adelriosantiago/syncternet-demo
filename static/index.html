@@ -33,7 +33,7 @@
     <div>
       thing: <input bd-model="thing" />
       <br/>
-      <div bd-html="thing"></div>
+      <div bd-content="thing"></div>
       <br/>
       <br/>
       <br/>
@@ -80,12 +80,21 @@
         scope[path] = ""
 
         if (domScope[path] !== []) domScope[path] = []
-        domScope[path].push((newVal) => {
-          el["value"] = newVal
+        domScope[path].push(() => {
+          if (el.value !== scope[path]) {
+            const selS = el.selectionStart
+            const selE = el.selectionEnd
+            el["value"] = scope[path]
+            el.selectionStart = selS
+            el.selectionEnd = selE
+          }
+          return
         })
 
         $(el).on("input", (ev) => {
-          socket.send(JSON.stringify({ p: path, v: ev.target.value }))
+          const val = ev.target.value
+          scope[path] = val
+          socket.send(JSON.stringify({ p: path, v: val }))
         })
       })
 
@@ -135,20 +144,15 @@
       }
       socket.onmessage = (msg) => {
         msg = JSON.parse(msg.data)
+        
         scope[msg.p] = msg.v
 
-        // Update scope and dom with bd-model
         if (domScope[msg.p] !== undefined) {
-          domScope[msg.p].forEach((o) => {
-            o(scope[msg.p])
-          })
+          domScope[msg.p].forEach((f) => f()) // Update bd-models
         }
-
-        // Update calculables (doms all other than bd-model)
-        if (domScope[msg.p] !== undefined) {
-          calcScope[msg.p].forEach((o) => {
-            o()
-          })
+        
+        if (calcScope[msg.p] !== undefined) {
+          calcScope[msg.p].forEach((f) => f()) // Update calculables
         }
       }
     </script>
