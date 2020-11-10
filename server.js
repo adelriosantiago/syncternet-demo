@@ -2,6 +2,7 @@ const http = require("http")
 const express = require("express")
 const bodyParser = require("body-parser")
 const ws = require("ws")
+const _set = require("lodash.set")
 const port = 3091
 
 const app = express()
@@ -17,15 +18,15 @@ app.get("/exampleGetScope", (req, res) => {
 const server = http.createServer(app)
 
 let scope = {
-  thing: "red bold",
+  thing: "here is a thing",
   word: "starting word",
   bool: false,
   number: 4,
   data: {
     name: "John Doe",
-    "qwe.zxc": "with dot",
+    /*"qwe.zxc": "with dot",
     "abc[2]": "with brackets",
-    address: "74 Henry Road",
+    address: "74 Henry Road",*/
   },
 }
 
@@ -41,8 +42,8 @@ const sendAllScope = (socket) => {
       } else {
         socket.send(JSON.stringify({ p: p.substr(1), v: e[1] }))
       }
-  })
-}
+    })
+  }
   iterate(scope)
 }
 
@@ -56,11 +57,10 @@ wsServer.on("connection", (socket) => {
   socket.on("message", (msg) => {
     msg = JSON.parse(msg)
 
-    scope[msg.p] = msg.v // Update scope
-
     wsServer.clients.forEach((client) => {
       if (client.readyState === ws.OPEN) client.send(JSON.stringify(msg))
     })
+    _set(scope, msg.p.split(">"), msg.v)
   })
 })
 
