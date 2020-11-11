@@ -60,6 +60,7 @@ wsServer.on("connection", (socket) => {
     wsServer.clients.forEach((client) => {
       if (client.readyState === ws.OPEN) client.send(JSON.stringify(msg))
     })
+    // ENH: A path cache can be implemented to avoid `split`'after each message
     _set(scope, msg.p.split(">"), msg.v)
   })
 })

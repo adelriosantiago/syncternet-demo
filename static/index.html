@@ -82,19 +82,20 @@
         const flatPath = arrPath.join(">")
         if (modelScope[flatPath] !== []) modelScope[flatPath] = []
         modelScope[flatPath].push(() => {
-          if (el.value !== scope[flatPath]) {
-            const selS = el.selectionStart
-            const selE = el.selectionEnd
-            el["value"] = _.get(scope, arrPath)
-            el.selectionStart = selS
-            el.selectionEnd = selE
-          }
+          const currentVal = _.get(scope, arrPath)
+          if (el.value === currentVal) return // Bailout if there is no need to update
+
+          const selS = el.selectionStart
+          const selE = el.selectionEnd
+          el.value = currentVal // Set new value
+          el.selectionStart = selS
+          el.selectionEnd = selE
           return
         })
 
         $(el).on("input", (ev) => {
           const val = ev.target.value
-          socket.send(JSON.stringify({ p: arrPath.join(">"), v: val }))
+          socket.send(JSON.stringify({ p: flatPath, v: val }))
           _.set(scope, arrPath, val)
         })
       })
