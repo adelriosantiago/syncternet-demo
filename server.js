@@ -2,7 +2,9 @@ const http = require("http")
 const express = require("express")
 const bodyParser = require("body-parser")
 const ws = require("ws")
+const _get = require("lodash.get")
 const _set = require("lodash.set")
+const utils = require("./utils.js")
 const port = 3091
 
 const app = express()
@@ -17,50 +19,64 @@ app.get("/exampleGetScope", (req, res) => {
 // Init server
 const server = http.createServer(app)
 
+const iterateAllScope = (onLeaf) => {
+  utils.iterate(scope, "", onLeaf)
+}
+
 let scope = {
   thing: "here is a thing",
   word: "starting word",
   bool: false,
-  number: 4,
+  number: "0",
   data: {
     name: "John Doe",
-    /*"qwe.zxc": "with dot",
-    "abc[2]": "with brackets",
-    address: "74 Henry Road",*/
+    address: "Main St. 2240",
   },
 }
 
-const sendAllScope = (socket) => {
-  const iterate = (root, path = "") => {
-    Object.entries(root).forEach((e) => {
-      const p = `${path}>${e[0]}`
+let _scope = {} // Flat scope which holds scope's real values
 
-      if (Object.prototype.toString.call(e[1]) === "[object Object]") {
-        iterate(e[1], p)
-      } else if (Object.prototype.toString.call(e[1]) === "[object Array]") {
-        iterate({ ...e[1] }, p)
-      } else {
-        socket.send(JSON.stringify({ p: p.substr(1), v: e[1] }))
-      }
-    })
-  }
-  iterate(scope)
-}
+iterateAllScope((p, v) => {
+  const prePath = p.split(">")
+  const leaf = prePath.pop()
+
+  _scope[p] = v // Set initial value in flat scope
+
+  const obj = prePath.length ? _get(scope, prePath) : scope
+  Object.defineProperty(obj, leaf, {
+    set: (v) => {
+      _scope[p] = v
+      setTimeout(() => {
+        wsServer.clients.forEach((client) => {
+          if (client.readyState === ws.OPEN) client.send(JSON.stringify({ p, v })) // ENH: A path cache can be implemented to avoid `split`'after each message
+        })
+      }, 0)
+    },
+    get: () => {
+      return _scope[p]
+    },
+  })
+})
+
+setInterval(() => {
+  scope.number = String(Math.round(Math.random() * 999))
+}, 1000)
 
 // Set WS server
 const wsServer = new ws.Server({ noServer: true })
 wsServer.on("connection", (socket) => {
   console.log("connection")
 
-  sendAllScope(socket)
+  // Send the client all values from scope
+  iterateAllScope((p, v) => {
+    socket.send(JSON.stringify({ p, v }))
+  })
 
   socket.on("message", (msg) => {
     msg = JSON.parse(msg)
 
-    wsServer.clients.forEach((client) => {
-      if (client.readyState === ws.OPEN) client.send(JSON.stringify(msg))
-    })
-    // ENH: A path cache can be implemented to avoid `split`'after each message
+    //msg.v = msg.v.toUpperCase() // ENH: Implement middleware
+
     _set(scope, msg.p.split(">"), msg.v)
   })
 })
