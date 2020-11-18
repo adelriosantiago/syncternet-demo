@@ -3,8 +3,8 @@
 const _get = require("lodash.get")
 const utils = require("./utils.js")
 
-const make = (scope, onFunctions) => {
-  if (Object.prototype.toString.call(onFunctions) !== "[object Object]")
+const build = (scope, onFunctions) => {
+  if (Object.prototype.toString.call(onFunctions) !== "[object Object]" || Object.keys(onFunctions).length === 0)
     throw new Error("At least one of `beforeSet`, `afterSet`, `beforeGet` or `afterGet` functions must be defined.")
 
   onFunctions = Object.assign(
@@ -21,20 +21,14 @@ const make = (scope, onFunctions) => {
     onFunctions
   )
 
-  const iterateAllScope = (onLeaf) => {
-    utils.iterate(scope, "", onLeaf)
-  }
-
-  // Make mirror
   let _scope = {} // Flat scope which holds scope's real values
-  iterateAllScope((p, v) => {
+  utils.iterate(scope, "", (p, v) => {
     const prePath = p.split(">")
     const leaf = prePath.pop()
 
     _scope[p] = v // Set initial value in flat scope
 
-    const obj = prePath.length ? _get(scope, prePath) : scope
-    Object.defineProperty(obj, leaf, {
+    Object.defineProperty(prePath.length ? _get(scope, prePath) : scope, leaf, {
       set: (v) => {
         v = onFunctions.beforeSet(p, v)
         _scope[p] = v
@@ -56,4 +50,4 @@ const make = (scope, onFunctions) => {
   return _scope
 }
 
-module.exports = make
+module.exports = build
