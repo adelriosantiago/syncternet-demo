@@ -84,6 +84,8 @@
     <script>
       const socket = new ReconnectingWebSocket("ws://localhost:3091")
 
+      const allWindowProperties = Object.getOwnPropertyNames(window)
+
       const attrCalculables = {
         "bd-id": "id",
         "bd-class": "className",
@@ -192,11 +194,10 @@
               },
             })
 
-            // Remove non-scope values (i.e. JSON.stringify)
-            found = found.map((e) => {
-              if (_.get(scope, e) === undefined) return undefined
-              return e
-            })
+            // Clear variables that already exist in the browser
+            for (let i = 0; i < found.length; i++) {
+              if (_.get(window, found[i]) !== undefined) found[i] = undefined
+            }
             found = found.filter((e) => e !== undefined)
 
             // Remove parents
