@@ -72,13 +72,13 @@
       <br />
       <br />
       list:
-      <div bd-content="list[0]"></div>
+      <div bd-content="list"></div>
       <br />
       <br />
       <br />
       bd-for:
       <ul>
-        <li bd-for="items">item</li>
+        <li bd-for="item in items" bd-content="item.todo">...</li>
       </ul>
     </div>
     <script>
@@ -86,6 +86,27 @@
 
       const allWindowProperties = Object.getOwnPropertyNames(window)
 
+      const attrIterables = {
+        "bd-for": (val, el) => {
+          if (!val) val = []
+
+          const elType = el.cloneNode()
+          elType.removeAttribute("bd-for")
+          const n = val.length
+          
+          console.log(">>>", val, el)
+
+          // Process element 0
+          el.innerHTML = JSON.stringify(val[val.length - n])
+
+          // Process all other elements
+          for (let i = n - 1; i > 0; i--) {
+            const elToInsert = elType.cloneNode()
+            elToInsert.innerHTML = JSON.stringify(val[i])
+            el.insertAdjacentElement("afterend", elToInsert)
+          }
+        }
+      }
       const attrCalculables = {
         "bd-id": "id",
         "bd-class": "className",
@@ -99,21 +120,6 @@
         },
         "bd-dangerous-html": "innerHTML",
         "bd-src": "src",
-        "bd-for": (val, el) => {
-          const elType = el.cloneNode()
-          elType.removeAttribute("bd-for")
-          const n = parseInt(val)
-
-          // Process element 0
-          el.innerHTML = val - n
-
-          // Process all other elements
-          for (let i = n - 1; i > 0; i--) {
-            const elToInsert = elType.cloneNode()
-            elToInsert.innerHTML = i
-            el.insertAdjacentElement("afterend", elToInsert)
-          }
-        },
       }
 
       let scope = {}
@@ -148,6 +154,15 @@
         })
       }
 
+      const initIterables = () => {
+        $("[bd-for]").each((i, el) => {
+          const attrVal = el.getAttribute("bd-for")
+          const [iterator, iterable] = attrVal.split("in").map(e => e.trim())
+          
+          console.log({iterator, iterable})
+        })
+      }
+
       const initCalculables = () => {
         const addCalculable = (path, attr, attrVal, el) => {
           if (!Array.isArray(calcScope[path])) calcScope[path] = []
@@ -162,6 +177,7 @@
 
           if (typeof attrCalculables[attr] === "function") {
             calcScope[path].push(() => {
+              //console.log("?", attr)
               attrCalculables[attr](sandboxFn(scope), el)
               return
             })
@@ -216,7 +232,10 @@
       }
 
       initModels()
+      initIterables()
       initCalculables()
+
+      console.log("BoyDog started with the following scopes:", {scope, modelScope, calcScope})
 
       const specialActions = {
         "@refresh": () => {

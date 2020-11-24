@@ -25,6 +25,11 @@ let scope = {
   word: "starting word",
   number: "0",
   list: ["q", "P", "3"],
+  items: [
+    { todo: "get milk", amt: 5 },
+    { todo: "buy meat", amt: 3 },
+    { todo: "exercise", amt: 1 },
+  ],
   data: {
     name: "John Doe",
     address: "Main St. 2240",
@@ -45,9 +50,9 @@ let _scope = onObjectLeafGetSet(scope, {
   },
 })
 
-setInterval(() => {
+/*setInterval(() => {
   scope.number = String(Math.round(Math.random() * 999))
-}, 1000)
+}, 1000)*/
 
 // Set WS server
 const wsServer = new ws.Server({ noServer: true })
