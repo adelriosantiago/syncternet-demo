@@ -27,7 +27,7 @@ wsServer.on("connection", (socket) => {
     // For special actions
     if (msg[0] === "@") {
       try {
-        bdProcess.specialActions[msg]()
+        bdProcess.action[msg]()
       } catch (e) {
         // Action not found
       }

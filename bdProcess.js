@@ -2,9 +2,9 @@ let scope = {
   word: "sample word",
 }
 
-const specialActions = {
+const action = {
   "@example": () => {
-    console.log("specialActions: @example")
+    console.log("action: @example")
   },
 }
 
@@ -12,4 +12,4 @@ const message = (msg) => {
   console.log("msg", msg)
 }
 
-module.exports = { specialActions, message }
+module.exports = { action, message }
