@@ -36,6 +36,19 @@
   <body>
     <div>word: <input bd-model="word" /></div>
     <script>
+      const bdProcess = {
+        scope: {},
+        action: {
+          "@connection": () => {
+            console.log("action: @connection")
+          },
+        },
+        message(msg) {
+          console.log("msg", msg)
+        },
+      }
+    </script>
+    <script>
       const socket = new ReconnectingWebSocket("ws://localhost:3091")
 
       const specialActions = {
@@ -57,15 +70,19 @@
         // For special actions
         if (msg[0] === "@") {
           try {
-            specialActions[msg]()
+            bdProcess.action[msg]()
           } catch (e) {
             // Action not found
           }
           return
         }
 
-        // For normal commands
-        msg = JSON.parse(msg)
+        try {
+          msg = JSON.parse(msg)
+        } catch (e) {
+          // Invalid message
+        }
+        bdProcess.message(msg)
       }
     </script>
   </body>
