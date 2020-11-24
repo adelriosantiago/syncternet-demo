@@ -1,8 +1,9 @@
+const port = 3091
 const http = require("http")
 const express = require("express")
 const bodyParser = require("body-parser")
 const ws = require("ws")
-const port = 3091
+const bdProcess = require("./bdProcess.js")
 
 const app = express()
 app.use(express.static("static"))
@@ -16,16 +17,6 @@ app.get("/exampleGetScope", (req, res) => {
 // Init server
 const server = http.createServer(app)
 
-let scope = {
-  word: "sample word",
-}
-
-const specialActions = {
-  "@example": () => {
-    console.log("specialActions: @example")
-  },
-}
-
 // Set WS server
 const wsServer = new ws.Server({ noServer: true })
 wsServer.on("connection", (socket) => {
@@ -36,14 +27,19 @@ wsServer.on("connection", (socket) => {
     // For special actions
     if (msg[0] === "@") {
       try {
-        specialActions[msg]()
+        bdProcess.specialActions[msg]()
       } catch (e) {
         // Action not found
       }
       return
     }
 
-    msg = JSON.parse(msg)
+    try {
+      msg = JSON.parse(msg)
+    } catch (e) {
+      // Invalid message
+    }
+    bdProcess.message(msg)
   })
 })
 
