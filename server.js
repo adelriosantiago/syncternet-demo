@@ -21,13 +21,15 @@ const server = http.createServer(app)
 const wsServer = new ws.Server({ noServer: true })
 wsServer.on("connection", (socket) => {
   console.log("New client")
+
+  bdProcess.action["@sendAll"](socket)
   socket.send("@connection")
 
   socket.on("message", (msg) => {
     // For special actions
     if (msg[0] === "@") {
       try {
-        bdProcess.action[msg]()
+        bdProcess.action[msg](socket)
       } catch (e) {
         // Action not found
       }
@@ -39,7 +41,7 @@ wsServer.on("connection", (socket) => {
     } catch (e) {
       // Invalid message
     }
-    bdProcess.message(msg)
+    bdProcess.message(socket, msg)
   })
 })
 

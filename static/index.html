@@ -36,17 +36,35 @@
   <body>
     <div>word: <input bd-model="word" /></div>
     <script>
-      const bdProcess = {
-        scope: {},
-        action: {
+      const bdProcess = (() => {
+        let scope = {}
+
+        const initModels = () => {
+          $("[bd-model]").each((i, el) => {
+            const path = el.getAttribute("bd-model")
+            scope[path] = ""
+
+            $(el).on("input", (ev) => {
+              const val = ev.target.value
+              socket.send(JSON.stringify({ p: path, v: val }))
+              scope[path] = val
+            })
+          })
+        }
+
+        const action = {
           "@connection": () => {
             console.log("action: @connection")
+            initModels()
           },
-        },
-        message(msg) {
+        }
+
+        const message = (msg) => {
           console.log("msg", msg)
-        },
-      }
+        }
+
+        return { action, message }
+      })()
     </script>
     <script>
       const socket = new ReconnectingWebSocket("ws://localhost:3091")
