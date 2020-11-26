@@ -4,9 +4,7 @@ let scope = {
 
 const action = {
   "@sendAll": (socket) => {
-    Object.entries(scope).forEach((e) => {
-      socket.send(JSON.stringify({ p: e[0], v: e[1] }))
-    })
+    console.log("action: @example")
   },
   "@example": (socket) => {
     console.log("action: @example")

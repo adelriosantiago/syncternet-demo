@@ -22,7 +22,6 @@ const wsServer = new ws.Server({ noServer: true })
 wsServer.on("connection", (socket) => {
   console.log("New client")
 
-  bdProcess.action["@sendAll"](socket)
   socket.send("@connection")
 
   socket.on("message", (msg) => {

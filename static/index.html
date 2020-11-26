@@ -31,6 +31,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/astring@1.4.3/dist/astring.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tinybind@1.0.0/dist/tinybind.min.js"></script>
   </head>
 
   <body>
@@ -39,23 +40,9 @@
       const bdProcess = (() => {
         let scope = {}
 
-        const initModels = () => {
-          $("[bd-model]").each((i, el) => {
-            const path = el.getAttribute("bd-model")
-            scope[path] = ""
-
-            $(el).on("input", (ev) => {
-              const val = ev.target.value
-              socket.send(JSON.stringify({ p: path, v: val }))
-              scope[path] = val
-            })
-          })
-        }
-
         const action = {
           "@connection": () => {
             console.log("action: @connection")
-            initModels()
           },
         }
 
