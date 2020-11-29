@@ -26,6 +26,11 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/astring@1.4.3/dist/astring.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/cash/8.1.0/cash.min.js"
+      integrity="sha512-sgDgZX/GgfD7qSeMjPN/oE9EQgXZJW55FIjdexVT60QerG2gAWhR9QDQEGt3O90Dy9jVcwMWsoTMhLgldIiKXw=="
+      crossorigin="anonymous"
+    ></script>
     <script src="./boydog-bind.js"></script>
   </head>
 
@@ -44,22 +49,13 @@
     </div>
     <script>
       const bdProcess = (() => {
-        let scope = {
-          word: "123",
-          // TODO: Continuar aqui implementando TODO
-          items: [
-            { todo: "get milk", amt: 5 },
-            { todo: "buy meat", amt: 3 },
-            { todo: "exercise", amt: 1 },
-          ],
-        }
+        let scope = {}
 
         const action = {
-          "@connection": () => {
-            console.log("action: @connection", scope)
-            tinybind.bind(document.getElementById("qwe"), scope)
-            tinybind.bind(document.getElementById("qwe2"), scope)
-            tinybind.bind(document.getElementById("qwe3"), scope)
+          "@updateScope": (data) => {
+            Object.assign(scope, JSON.parse(data))
+            console.log("Connected and received scope", scope)
+            tinybind.bind(document.getElementsByTagName("body")[0], scope)
           },
         }
 
@@ -70,6 +66,8 @@
         return { action, message }
       })()
     </script>
+
+    <!-- wsEngine -->
     <script>
       const socket = new ReconnectingWebSocket("ws://localhost:3091")
 
@@ -86,7 +84,7 @@
         // For special actions
         if (msg[0] === "@") {
           try {
-            bdProcess.action[msg]()
+            bdProcess.action[msg.split(">")[0]](msg.split(">")[1])
           } catch (e) {
             // Action not found
           }
