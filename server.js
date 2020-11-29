@@ -17,18 +17,18 @@ app.get("/exampleGetScope", (req, res) => {
 // Init server
 const server = http.createServer(app)
 
-// Set WS server
+// wsEngine
 const wsServer = new ws.Server({ noServer: true })
 wsServer.on("connection", (socket) => {
   console.log("New client")
 
-  socket.send("@connection")
+  bdProcess.action["@sendScope"](socket)
 
   socket.on("message", (msg) => {
     // For special actions
     if (msg[0] === "@") {
       try {
-        bdProcess.action[msg](socket)
+        bdProcess.action[msg.split(">")[0]](socket, msg.split(">")[1])
       } catch (e) {
         // Action not found
       }
