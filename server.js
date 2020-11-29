@@ -30,7 +30,7 @@ wsServer.on("connection", (socket) => {
       try {
         bdProcess.action[msg.split(">")[0]](socket, msg.split(">")[1])
       } catch (e) {
-        // Action not found
+        console.log("Invalid action", e)
       }
       return
     }
@@ -38,7 +38,7 @@ wsServer.on("connection", (socket) => {
     try {
       msg = JSON.parse(msg)
     } catch (e) {
-      // Invalid message
+      console.log("Invalid message", e)
     }
     bdProcess.message(socket, msg)
   })

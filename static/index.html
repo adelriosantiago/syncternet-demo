@@ -36,10 +36,10 @@
 
   <body>
     <div>
-      <p>word: <input id="qwe" rv-value="word" /></p>
-      <p>word text: <span id="qwe2" rv-text="word"></span></p>
+      <p>word: <input rv-value="word" /></p>
+      <p>word text: <span rv-text="word"></span></p>
       <ul>
-        <li id="qwe3" rv-each-item="items">
+        <li rv-each-item="items">
           <p>todo: <input rv-value="item.todo" /></p>
           <p>todo text: <span rv-text="item.todo"></span></p>
           <p>amt text: <span rv-text="item.amt"></span></p>
@@ -86,7 +86,7 @@
           try {
             bdProcess.action[msg.split(">")[0]](msg.split(">")[1])
           } catch (e) {
-            // Action not found
+            console.log("Invalid action", e)
           }
           return
         }
@@ -94,7 +94,7 @@
         try {
           msg = JSON.parse(msg)
         } catch (e) {
-          // Invalid message
+          console.log("Invalid message", e)
         }
         bdProcess.message(msg)
       }
