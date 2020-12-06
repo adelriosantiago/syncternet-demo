@@ -509,7 +509,7 @@
       var routineFn = this.binder.routine || this.binder
 
       if (routineFn instanceof Function) {
-        console.log("routineFn", this)
+        //console.log("routineFn", this)
         routineFn.call(this, this.el, value, this.observer.keypath, this.observer.obj.$index) // NOTE: This executes each time the element is bind'ed
       }
     } // Syncs up the view binding with the model.
@@ -916,6 +916,7 @@
 
                 value = newValue
                 var data = _this2.weakmap[obj.__rv]
+                //console.log("setk", keypath, obj, data)
 
                 if (data) {
                   var _callbacks = data.callbacks[keypath]
@@ -933,6 +934,8 @@
           })
         }
       }
+
+      //console.log("keypath", keypath)
 
       if (callbacks[keypath].indexOf(callback) === -1) {
         callbacks[keypath].push(callback)
@@ -1052,6 +1055,7 @@
             }
 
             view = createView(_this, data, previous.nextSibling)
+            console.log("-->", view) // TODO: Continue here This contains the elemenet and the $index inside models
 
             _this.iterated.push(view)
           } else {
@@ -1191,7 +1195,7 @@
       publishes: true,
       priority: 3000,
       bind: function bind(el) {
-        //console.log("bind value::::::", el) // NOTE: This is a good point where WS send can happen
+        //console.log("bind value::::::", el, this) // NOTE: This is a good point where WS send can happen
 
         this.isRadio = el.tagName === "INPUT" && el.type === "radio"
 
@@ -1214,8 +1218,7 @@
         }
       },
       routine: function routine(el, value, a, b, c) {
-        console.log("routine::::::", el, value, a, b, c)
-
+        //console.log("routine::::::", el, value, a, b, c)
         //bdBus.publish("input", { el, value })
 
         if (this.isRadio) {
