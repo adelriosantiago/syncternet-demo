@@ -31,52 +31,24 @@
       integrity="sha512-sgDgZX/GgfD7qSeMjPN/oE9EQgXZJW55FIjdexVT60QerG2gAWhR9QDQEGt3O90Dy9jVcwMWsoTMhLgldIiKXw=="
       crossorigin="anonymous"
     ></script>
-    <script src="./bdBus.js"></script>
-    <script src="./boydog-bind.js"></script>
   </head>
 
   <body>
     <div>
-      <p>word: <input rv-value="word" /></p>
-      <!-- <p>word text: <span rv-text="word"></span></p> -->
       <ul>
-        <li rv-each-item="items">
-          <p>todo: <input rv-value="item.todo" /></p>
-          <!-- <ul>
-            <li rv-each-price="item.prices">
-              <p>price: <input rv-value="price" /></p>
-            </li>
-          </ul> -->
-          <!-- <p>todo text: <span rv-text="item.todo"></span></p>
-          <p>amt text: <span rv-text="item.amt"></span></p> -->
+        <li bd-for="items>\d+>">
+          <p>todo: <input bd-value="$todo" /></p>
         </li>
       </ul>
-      <p>all items: <span rv-text="items"></span></p>
     </div>
     <script>
-      bdBus.subscribe("input", (msg) => {
-        console.log("bdBus input", msg)
-        //socket.send(JSON.stringify({ p: flatPath, v: val }))
-      })
-
       const bdProcess = (() => {
         let scope = {}
 
         const action = {
-          "@updateScope": (data) => {
+          "@init": (data) => {
             Object.assign(scope, JSON.parse(data))
             console.log("Connected and received scope", scope)
-            tinybind.bind(document.getElementsByTagName("body")[0], scope)
-            /*tinybind.adapters[":"] = {
-              observe: function (obj, keypath, callback) {
-                console.log("observe", obj, keypath, callback)
-                //obj.on("change:" + keypath, callback)
-              },
-            }*/
-
-            setTimeout(() => {
-              scope.items[0].todo += "Q"
-            }, 500)
           },
         }
 
@@ -103,11 +75,12 @@
         msg = msg.data
 
         // For special actions
+        const match = msg.match(/@\w+\|/)[0]
         if (msg[0] === "@") {
           try {
-            bdProcess.action[msg.split(">")[0]](msg.split(">")[1])
+            bdProcess.action[match.slice(0, -1)](msg.substr(match.length))
           } catch (e) {
-            console.log("Invalid action", e)
+            console.log("Action received but handler not found", e)
           }
           return
         }

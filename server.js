@@ -22,15 +22,16 @@ const wsServer = new ws.Server({ noServer: true })
 wsServer.on("connection", (socket) => {
   console.log("New client")
 
-  bdProcess.action["@sendScope"](socket)
+  bdProcess.action["@init"](socket)
 
   socket.on("message", (msg) => {
     // For special actions
+    const match = msg.match(/@\w+\|/)[0]
     if (msg[0] === "@") {
       try {
-        bdProcess.action[msg.split(">")[0]](socket, msg.split(">")[1])
+        bdProcess.action[match.slice(0, -1)](socket, msg.substr(match.length))
       } catch (e) {
-        console.log("Invalid action", e)
+        console.log("Action received but handler not found", e)
       }
       return
     }
