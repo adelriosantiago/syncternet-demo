@@ -37,14 +37,15 @@
     <div>
       <ul>
         <li bd-loop="items>\d+>">
-          <p>todo: <input bd-value="$todo" /></p>
+          <p>todo: <input bd-value="$$todo" /></p>
         </li>
       </ul>
     </div>
     <script>
       const bdProcess = (() => {
-        const attrLoop = ["bd-loop"]
-        const attrNormal = ["bd-value", "bd-id"]
+        const prefix = "bd"
+        const attrLoop = `${prefix}-loop`
+        const attrNormal = [`${prefix}-value`, `${prefix}-id`]
 
         let scope = {}
 
@@ -52,7 +53,7 @@
           const matches = Object.keys(scope)
             .map((e) => {
               const m = e.match(new RegExp(`^(.*)(${str})(.*)$`)) || []
-              return { $$: m[1], "$<": m[2], "$>": m[3] }
+              return { "$<": m[1], $$: m[2], "$>": m[3] }
             })
             .filter((e) => e.$$ !== undefined)
 
@@ -61,12 +62,54 @@
 
         const processLoops = () => {
           $(`[${attrLoop}]`).each((i, el) => {
-            const arrPath = el.getAttribute(attrLoop)
+            el = $(el)
+
+            const arrPath = el.attr(attrLoop)
+
+            // Save blueprint
+            const blueprintView = el.clone()
+            blueprintView.removeAttr(attrLoop)
+
+            // Process element 0
+            el.find("[bd-value*='$$']").each((i, f) => {
+              f = $(f)
+
+              if (f.closest(`[${attrLoop}]`)[0] !== el[0]) {
+                // When element found is under another bd-loop (TODO: fix)
+                return
+              }
+              f.attr("_bd-value-original", f.attr("bd-value"))
+            })
+
+            // Create match structures
+            const parent = el.parent()
             const matches = getMatches(arrPath)
-            matches.forEach((m) => {
-              console.log("needs to by copied:", el, m)
+
+            const l = matches.length // TODO: Check if this changed
+
+            matches.forEach((m, key) => {
+              if (key === 0) return
+
+              const tempClone = blueprintView.clone()
+              parent.append(tempClone)
+            })
+
+            // Bake match structures
+            parent.children().each((key, el) => {
+              el = $(el)
+
+              el.find("[bd-value*='$$']").each((i, f) => {
+                f = $(f)
+                // TODO: Fix when element found is under another bd-loop
+                f.attr("bd-value", f.attr("bd-value").replace("$$", matches[key]["$$"]))
+              })
             })
           })
+        }
+
+        const bindElements = () => {
+          console.log("should bind all elements")
+          // TODO: bind a elements, search for something already made in index-object
         }
 
         const action = {
@@ -74,6 +117,7 @@
             Object.assign(scope, JSON.parse(data))
             console.log("Connected and received scope", scope)
             processLoops()
+            bindElements()
           },
         }
 
