@@ -64,11 +64,8 @@
           $(`[${attrLoop}]`).each((i, el) => {
             el = $(el)
 
-            const arrPath = el.attr(attrLoop)
-
-            // Save blueprint
-            const blueprintView = el.clone()
-            blueprintView.removeAttr(attrLoop)
+            // Save blueprint if needed
+            if (!el.bdBlueprintView) el.bdBlueprintView = el.clone().removeAttr(attrLoop)
 
             // Process element 0
             el.find("[bd-value*='$$']").each((i, f) => {
@@ -81,17 +78,18 @@
               f.attr("_bd-value-original", f.attr("bd-value"))
             })
 
-            // Create match structures
+            // Get matches
             const parent = el.parent()
-            const matches = getMatches(arrPath)
+            const matches = getMatches(el.attr(attrLoop))
 
-            const l = matches.length // TODO: Check if this changed
+            // Check if there are more or less elements
+            const newL = matches.length
+            const currentL = el.attr("_bd-last-matches")
+            if (+newL === +currentL) return // Return since the elements are the same
 
             matches.forEach((m, key) => {
               if (key === 0) return
-
-              const tempClone = blueprintView.clone()
-              parent.append(tempClone)
+              parent.append(el.bdBlueprintView.clone())
             })
 
             // Bake match structures
@@ -117,6 +115,12 @@
             Object.assign(scope, JSON.parse(data))
             console.log("Connected and received scope", scope)
             processLoops()
+
+            // DEBUG
+            setTimeout(() => {
+              processLoops()
+            }, 1000)
+
             bindElements()
           },
         }

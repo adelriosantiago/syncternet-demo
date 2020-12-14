@@ -64,7 +64,7 @@ This process, step by step happened as follows. Given the initial HTML,
 </li>
 ```
 
-check if there is a `blueprintView` variable inside the element. If there is not, then save one removing the `bd-loop` attribute. Therefore `blueprintView` of the DOM element should now be equal to:
+check if there is a `bdBlueprintView` variable inside the element. If there is not, then save one removing the `bd-loop` attribute. Therefore `bdBlueprintView` of the DOM element should now be equal to:
 
 ```html
 <li>
@@ -90,7 +90,7 @@ This element's children are scanned for any `bd-*` attribute that contains `$$`,
 </li>
 ```
 
-Since `matches.length` is 3, clone and append 2 more instances of `blueprintView`:
+Since `matches.length` is 3, clone and append 2 more instances of `bdBlueprintView`:
 
 ```html
 <li bd-loop="items>\d+>" _bd-last-matches="3">
