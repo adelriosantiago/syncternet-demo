@@ -109,7 +109,6 @@
 
         const bindElements = () => {
           $("[bd-value]").each((i, el) => {
-            _el = el // TODO: change this, better to use $ or not do this switch (USE JQUERY)
             el = $(el)
 
             const arrPath = el.attr("bd-value")
@@ -120,13 +119,13 @@
             if (modelScope[arrPath] !== []) modelScope[arrPath] = []
             modelScope[arrPath].push(() => {
               const currentVal = scope[arrPath]
-              if (_el.value === currentVal) return // Bailout if there is no need to update
+              if (el.val() === currentVal) return // Bailout if there is no need to update
 
-              const selS = _el.selectionStart
-              const selE = _el.selectionEnd
-              _el.value = currentVal // Set new value
-              _el.selectionStart = selS
-              _el.selectionEnd = selE
+              const selS = el[0].selectionStart
+              const selE = el[0].selectionEnd
+              el[0].value = currentVal // Set new value
+              el[0].selectionStart = selS
+              el[0].selectionEnd = selE
 
               return
             })
@@ -155,7 +154,8 @@
         }
 
         const message = (msg) => {
-          console.log("msg", msg)
+          scope[msg.p] = msg.v
+          modelScope[msg.p].forEach((f) => f())
         }
 
         return { action, message }
