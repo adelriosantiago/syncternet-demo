@@ -48,6 +48,7 @@
         const attrNormal = [`${prefix}-value`, `${prefix}-id`]
 
         let scope = {}
+        let modelScope = {}
 
         const getMatches = (str) => {
           const matches = Object.keys(scope)
@@ -86,6 +87,7 @@
             const newL = matches.length
             const currentL = el.attr("_bd-last-matches")
             if (+newL === +currentL) return // Return since the elements are the same
+            el.attr("_bd-last-matches", newL)
 
             matches.forEach((m, key) => {
               if (key === 0) return
@@ -106,8 +108,35 @@
         }
 
         const bindElements = () => {
-          console.log("should bind all elements")
-          // TODO: bind a elements, search for something already made in index-object
+          $("[bd-value]").each((i, el) => {
+            _el = el // TODO: change this, better to use $ or not do this switch (USE JQUERY)
+            el = $(el)
+
+            const arrPath = el.attr("bd-value")
+
+            console.log("binding", el, arrPath, scope)
+            el.val(scope[arrPath])
+
+            if (modelScope[arrPath] !== []) modelScope[arrPath] = []
+            modelScope[arrPath].push(() => {
+              const currentVal = scope[arrPath]
+              if (_el.value === currentVal) return // Bailout if there is no need to update
+
+              const selS = _el.selectionStart
+              const selE = _el.selectionEnd
+              _el.value = currentVal // Set new value
+              _el.selectionStart = selS
+              _el.selectionEnd = selE
+
+              return
+            })
+
+            el.on("input", (ev) => {
+              const val = ev.target.value
+              socket.send(JSON.stringify({ p: arrPath, v: val }))
+              scope[arrPath] = val
+            })
+          })
         }
 
         const action = {
@@ -148,13 +177,14 @@
         msg = msg.data
 
         // For special actions
-        const match = msg.match(/@\w+\|/)[0]
         if (msg[0] === "@") {
+          const match = (msg.match(/@\w+\|/) || [])[0]
           try {
             bdProcess.action[match.slice(0, -1)](msg.substr(match.length))
           } catch (e) {
             console.log("Action received but handler not found or throws error", e)
           }
+
           return
         }
 

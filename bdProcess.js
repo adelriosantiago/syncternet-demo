@@ -1,3 +1,10 @@
+// Status:
+// [ ] Rock
+// [X] Plastic
+// [ ] Paper
+
+let ws, wsServer
+
 let scope = {
   word: "123",
   "items>0>todo": "get milk",
@@ -17,6 +24,19 @@ const action = {
 
 const message = (socket, msg) => {
   console.log("msg", msg)
+  scope[msg.p] = msg.v
+
+  // Send to clients
+  setTimeout(() => {
+    wsServer.clients.forEach((client) => {
+      if (client.readyState === ws.OPEN) client.send(JSON.stringify({ p: msg.p, v: msg.v }))
+    })
+  }, 0)
 }
 
-module.exports = { action, message }
+const init = (_ws, _wsServer) => {
+  ws = _ws
+  wsServer = _wsServer
+}
+
+module.exports = { action, message, init }

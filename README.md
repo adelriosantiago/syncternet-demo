@@ -120,5 +120,6 @@ Iterate again each children while regex replacing any `$$`, `$>` or `$<` found b
 
 The structure above is now good to be processed by the binder.
 
+## SO resources:
 
-
+ - https://stackoverflow.com/questions/5100376/how-to-watch-for-array-changes

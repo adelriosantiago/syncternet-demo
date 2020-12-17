@@ -1,3 +1,8 @@
+// Status:
+// [X] Rock
+// [ ] Plastic
+// [ ] Paper
+
 const port = 3091
 const http = require("http")
 const express = require("express")
@@ -17,8 +22,10 @@ app.get("/exampleGetScope", (req, res) => {
 // Init server
 const server = http.createServer(app)
 
-// wsEngine
+// Websocket init
 const wsServer = new ws.Server({ noServer: true })
+bdProcess.init(ws, wsServer)
+
 wsServer.on("connection", (socket) => {
   console.log("New client")
 
@@ -26,8 +33,8 @@ wsServer.on("connection", (socket) => {
 
   socket.on("message", (msg) => {
     // For special actions
-    const match = msg.match(/@\w+\|/)[0]
     if (msg[0] === "@") {
+      const match = (msg.match(/@\w+\|/) || [])[0]
       try {
         bdProcess.action[match.slice(0, -1)](socket, msg.substr(match.length))
       } catch (e) {
