@@ -1,3 +1,9 @@
+<!--
+  - Rock
+  -> Plastic
+  - Paper
+-->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -40,8 +46,13 @@
           <p>todo: <input bd-value="$$todo" /></p>
         </li>
       </ul>
+      <button bd-click="@addItem">add item</button>
     </div>
     <script>
+      // - Rock
+      // -> Plastic
+      // - Paper
+
       const bdProcess = (() => {
         const prefix = "bd"
         const attrLoop = `${prefix}-loop`
@@ -66,7 +77,26 @@
             el = $(el)
 
             // Save blueprint if needed
-            if (!el.bdBlueprintView) el.bdBlueprintView = el.clone().removeAttr(attrLoop)
+            if (el.attr("_bd-blueprint") === undefined) {
+              el.attr("_bd-blueprint", el.clone().removeAttr(attrLoop).html().trim())
+            }
+
+            // Get matches
+            const parent = el.parent()
+            const matches = getMatches(el.attr(attrLoop))
+
+            // Check if there are more elements or less elements
+            const newL = matches.length
+            const currentL = el.attr("_bd-last-matches")
+            if (+newL === +currentL) return // Return since the elements are the same
+            el.attr("_bd-last-matches", newL)
+
+            // Create extra elements
+            matches.forEach((m, key) => {
+              if (key === 0) return
+              if (key < +currentL) return
+              parent.append($(el.attr("_bd-blueprint")).clone())
+            })
 
             // Process element 0
             el.find("[bd-value*='$$']").each((i, f) => {
@@ -77,21 +107,6 @@
                 return
               }
               f.attr("_bd-value-original", f.attr("bd-value"))
-            })
-
-            // Get matches
-            const parent = el.parent()
-            const matches = getMatches(el.attr(attrLoop))
-
-            // Check if there are more or less elements
-            const newL = matches.length
-            const currentL = el.attr("_bd-last-matches")
-            if (+newL === +currentL) return // Return since the elements are the same
-            el.attr("_bd-last-matches", newL)
-
-            matches.forEach((m, key) => {
-              if (key === 0) return
-              parent.append(el.bdBlueprintView.clone())
             })
 
             // Bake match structures
@@ -113,7 +128,6 @@
 
             const arrPath = el.attr("bd-value")
 
-            console.log("binding", el, arrPath, scope)
             el.val(scope[arrPath])
 
             if (modelScope[arrPath] !== []) modelScope[arrPath] = []
@@ -136,6 +150,15 @@
               scope[arrPath] = val
             })
           })
+
+          $("[bd-click]").each((i, el) => {
+            el = $(el)
+
+            //TODO: Process actions, when clicking the action should be sent to the server
+            el.on("click", (ev) => {
+              socket.send(JSON.stringify({ p: "items>3>todo", v: "new item" }))
+            })
+          })
         }
 
         const action = {
@@ -143,18 +166,27 @@
             Object.assign(scope, JSON.parse(data))
             console.log("Connected and received scope", scope)
             processLoops()
+            bindElements()
 
-            // DEBUG
+            /*// DEBUG, SHOULD NOT ADD MORE ITEMS BECAUSE HTML IS ALREADY BAKED
             setTimeout(() => {
               processLoops()
-            }, 1000)
-
-            bindElements()
+            }, 1000)*/
           },
         }
 
         const message = (msg) => {
+          console.log("msg", msg, modelScope)
+
+          const newAdded = scope[msg.p] === undefined ? true : false
           scope[msg.p] = msg.v
+          if (newAdded) {
+            processLoops() // TODO: FIX this creating 3 more elements instead of 1
+            bindElements()
+          }
+
+          // Run update functions
+          if (modelScope[msg.p] === undefined) modelScope[msg.p] = [] //TODO: Ideally this line should not be needed as it should always exist
           modelScope[msg.p].forEach((f) => f())
         }
 
@@ -164,6 +196,10 @@
 
     <!-- wsEngine module -->
     <script>
+      // -> Rock
+      // - Plastic
+      // - Paper
+
       const socket = new ReconnectingWebSocket("ws://localhost:3091")
 
       // Socket events
