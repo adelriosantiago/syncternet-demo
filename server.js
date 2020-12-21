@@ -1,7 +1,6 @@
-// Status:
-// [X] Rock
-// [ ] Plastic
-// [ ] Paper
+// -> Rock
+// - Plastic
+// - Paper
 
 const port = 3091
 const http = require("http")
