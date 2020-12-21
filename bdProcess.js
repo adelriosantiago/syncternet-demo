@@ -6,7 +6,7 @@ let ws, wsServer
 
 let scope = {
   word: "123",
-  "items>0>todo": "get milk",
+  "items>0>todo": "buy milk",
   "items>1>todo": "buy meat",
   "items>2>todo": "fix car",
 }
