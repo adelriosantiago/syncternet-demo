@@ -65,8 +65,8 @@
           },
         }
 
-        let scope = {}
-        let modelScope = {}
+        let scope = {} // Contains latest values
+        let modelScope = {} // Contains update functions
 
         const getMatches = (str) => {
           const matches = Object.keys(scope)
