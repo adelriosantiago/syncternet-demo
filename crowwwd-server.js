@@ -24,6 +24,7 @@ const init = (scope, server) => {
         return
       }
 
+      // For normal commands
       try {
         msg = JSON.parse(msg)
       } catch (e) {

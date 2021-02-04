@@ -5,271 +5,399 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="boydog" />
     <title>boydog-noot</title>
+
+    <!-- Landing page resources -->
+    <link rel="icon" href="./img/icon.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./css/milligram.css" />
+    <link rel="stylesheet" href="./css/milligram-demopage.css" />
+    <link rel="stylesheet" href="./css/basic.css" />
+    <link rel="stylesheet" href="./css/tabslet-style.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+      crossorigin="anonymous"
+    />
     <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"
-      integrity="sha512-B4skI5FiLurS86aioJx9VfozI1wjqrn6aTdJH+YQUmCZum/ZibPBTX55k5d9XM6EsKePDInkLVrN7vPmJxc1qA=="
+      src="https://code.jquery.com/jquery-3.5.1.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
       crossorigin="anonymous"
     ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/cash/8.1.0/cash.min.js"
-      integrity="sha512-sgDgZX/GgfD7qSeMjPN/oE9EQgXZJW55FIjdexVT60QerG2gAWhR9QDQEGt3O90Dy9jVcwMWsoTMhLgldIiKXw=="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/acorn/6.4.2/acorn.min.js"
-      integrity="sha512-5McC9yHdohQSaKZHRkGbyD84OUdkgK8Cv89km3Tb8zA2ns9yyDU3yOPLeYB2X6NzM4qbu7rpjFUftjf5X/z0SQ=="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/acorn-walk/6.2.0/walk.min.js"
-      integrity="sha512-Q57dc6D3mm13he5p7wUxJsTSRsETCo0Z/SU9u9YfKRiuWGsx7U02+tCpgaUUi4RJ8rQB2DofcWqXbvgBLCUcSQ=="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js"
-      integrity="sha512-90vH1Z83AJY9DmlWa8WkjkV79yfS2n2Oxhsi2dZbIv0nC4E6m5AbH8Nh156kkM7JePmqD6tcZsfad1ueoaovww=="
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/astring@1.4.3/dist/astring.min.js"></script>
+
+    <!-- Debug CSS styles -->
+    <style>
+      *.partyon-debug {
+        border: 1px solid red;
+      }
+
+      .class-example span.red {
+        color: red;
+      }
+      .class-example span.blue {
+        color: blue;
+      }
+      .class-example span.yellow {
+        color: yellow;
+      }
+      .class-example span.green {
+        color: green;
+      }
+      .class-example span.white {
+        color: white;
+      }
+      .class-example span.black {
+        color: black;
+      }
+      .class-example span.bold {
+        font-weight: bold;
+      }
+      .class-example span.italic {
+        font-style: italic;
+      }
+    </style>
   </head>
 
   <body>
+    <main class="wrapper">
+      <header id="home" class="header">
+        <section class="container">
+          <img src="./img/main-logo-small.png" width="550" />
+          <a href="https://github.com/boydoglabs/boydog" title="boydog on Github" target="_blank">
+            <svg class="octocat" viewBox="0 0 250 250">
+              <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+              <path
+                class="octocat-arm"
+                d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              ></path>
+              <path
+                class="octocat-body"
+                d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              ></path>
+            </svg>
+          </a>
+          <br />
+          <h3 class="description">Server-to-client two way binding using WebSockets</h3>
+          <br />
+          <p>
+            BoyDog is a web framework based on Express.JS and ShareDB that allows you to<br />
+            build real-time collaborative webpages in 3 lines of code.
+          </p>
+          <p>Open this page in a second window or mobile phone and start interacting.</p>
+        </section>
+      </header>
+
+      <section id="demos" class="container white">
+        <div class="row">
+          <div class="column">
+            <h3 class="title text-center">Examples</h3>
+            <br />
+
+            <p class="example-line">
+              BoyDog has a back-end scope, and a front-end scope in HTML. To make an input
+              <em>real-time collaborative</em> across all users who are viewing the page just create the variable in
+              back-end and bind it in front-end.
+            </p>
+
+            <div class="row">
+              <div class="column column-60">
+                <div class="tabs tabs_default">
+                  <div id="ex-1-boy">
+                    <span>
+                      <pre><code class="text-left">var scope = {
+  word: "starting word",
+};
+</code></pre>
+                    </span>
+                  </div>
+                  <div id="ex-1-dog">
+                    <pre><code class="text-left">&lt;input type="text" bd-value="word"&gt;</code></pre>
+                  </div>
+                  <ul class="horizontal">
+                    <li><a href="#ex-1-boy">back</a></li>
+                    <li><a href="#ex-1-dog">front</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="column">
+                <div class="example-spacer"></div>
+                <input type="text" placeholder="Write something" bd-value="word" bd-verbose="true" />
+              </div>
+            </div>
+
+            <p class="example-line">
+              The scope can have as many keys as you wish. Boydog will keep them all keep in sync using Operational
+              Transformations (OT):
+            </p>
+            <div class="row">
+              <div class="column column-60">
+                <div class="tabs tabs_default">
+                  <div id="ex-1-boy">
+                    <span>
+                      <pre><code class="text-left">var scope = {
+  word: "starting word",
+  title: "initial title",
+  subject: "random subject",
+};
+</code></pre>
+                    </span>
+                  </div>
+                  <div id="ex-1-dog">
+                    <pre><code class="text-left">&lt;input type="text" bd-value="word"&gt;
+&lt;input type="text" bd-value="title"&gt;
+&lt;input type="text" bd-value="subject"&gt;
+</code></pre>
+                  </div>
+                  <ul class="horizontal">
+                    <li><a href="#ex-1-boy">back</a></li>
+                    <li><a href="#ex-1-dog">front</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="column">
+                <div class="example-spacer"></div>
+                <input type="text" placeholder="Write something" bd-value="word" />
+                <input type="text" placeholder="Write something" bd-value="title" />
+                <input type="text" placeholder="Write something" bd-value="subject" />
+              </div>
+            </div>
+
+            <p class="example-line">More complex scopes are also valid. To bind them just write its full path:</p>
+            <div class="row">
+              <div class="column column-60">
+                <div class="tabs tabs_default">
+                  <div id="ex-1-boy">
+                    <span>
+                      <pre><code class="text-left">var scope = {
+  data: {
+    name: "John Doe",
+    address: "74 Henry Road",
+  }
+};
+</code></pre>
+                    </span>
+                  </div>
+                  <div id="ex-1-dog">
+                    <pre><code class="text-left">&lt;input type="text" bd-value="data.name"&gt;
+&lt;input type="text" bd-value="data.address"&gt;
+</code></pre>
+                  </div>
+                  <ul class="horizontal">
+                    <li><a href="#ex-1-boy">back</a></li>
+                    <li><a href="#ex-1-dog">front</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="column">
+                <div class="example-spacer"></div>
+                <input type="text" placeholder="Write something" bd-value="data.name" />
+                <input type="text" placeholder="Write something" bd-value="data.address" />
+              </div>
+            </div>
+
+            <p class="example-line">You can bind other attributes too:</p>
+            <div class="row">
+              <div class="column column-60">
+                <div class="tabs tabs_default">
+                  <div id="ex-1-boy">
+                    <span>
+                      <pre><code class="text-left">var scope = {
+  thing: "red"
+};
+</code></pre>
+                    </span>
+                  </div>
+                  <div id="ex-1-dog">
+                    <pre><code class="text-left">&lt;input type=&quot;text&quot; bd-value=&quot;thing&quot;&gt;
+&lt;blockquote bd-html=&quot;'The quote is: ' + thing&quot;&gt;&lt;/blockquote&gt;
+&lt;span bd-class=&quot;'my other classes ' + thing&quot;&gt;Try &quot;red&quot;, &quot;blue&quot; or &quot;italic blue&quot;&lt;/span&gt;
+&lt;img bd-src=&quot;'/img/' + thing + '.jpg'&quot /&gt;
+</code></pre>
+                  </div>
+                  <ul class="horizontal">
+                    <li><a href="#ex-1-boy">back</a></li>
+                    <li><a href="#ex-1-dog">front</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="column">
+                <div class="example-spacer"></div>
+                <input type="text" placeholder="Write something" bd-value="thing" />
+                <!-- TODO: Enable this again, for some reason href it is not working -->
+                <!-- <p>As an href: <a bd-href="thing">Try "http://boy.dog"</a></p> -->
+                <blockquote bd-html="'The quote HTML is: ' + thing"></blockquote>
+                <div class="class-example">
+                  <span bd-class="'my other classes ' + thing">As a class. Try "red", "blue" or "italic blue".</span>
+                </div>
+                <br />
+                <p>As a src (cats are called "red", "blue", "yellow", "bold" and "italic"):</p>
+                <img
+                  onerror="this.src='https://via.placeholder.com/200x100'"
+                  bd-src="'/img/' + thing + '.jpg'"
+                  width="200px"
+                  height="100px"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="example-line">Scope changes from the server are also broadcasted to all connected users:</p>
+        <div class="row">
+          <div class="column column-60">
+            <div class="tabs tabs_default">
+              <div id="ex-1-boy">
+                <span>
+                  <pre><code class="text-left">var scope = {
+  number: 0
+};
+
+setInterval(() => {
+  scope.number = String(Math.random())
+}, 1000)
+</code></pre>
+                </span>
+              </div>
+              <div id="ex-1-dog">
+                <pre><code class="text-left">&lt;p bd-html=&quot;'Random number: ' + number&quot;&gt;&lt;/p&gt;
+</code></pre>
+              </div>
+              <ul class="horizontal">
+                <li><a href="#ex-1-boy">back</a></li>
+                <li><a href="#ex-1-dog">front</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="column">
+            <div class="example-spacer"></div>
+            <p bd-html="'Number: ' + number"></p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="column">
+            <h3 class="title text-center">Getting started</h3>
+            <br />
+            <div class="row">
+              <div class="column">
+                <p>Install <em>boydog</em>:</p>
+                <pre><code class="text-left">npm install --save boydog</code></pre>
+                <p>Init boydog in your Express server:</p>
+                <pre><code class="text-left steps"><span class="washed">const express = require("express")</span>
+const boydog = require("boydog")
+
+<span class="washed">const app = express()</span>
+<span class="washed">app.all("/", (req, res) => { /* My routes */ })</span>
+<span class="washed">const server = app.listen(8080)</span>
+
+let scope = {
+  name: "John Doe",
+}
+boydog.init(scope, server)
+</code></pre>
+                <p>
+                  Finally, bind your scope variables. Don't forget to load <em>boydog-client</em> before the closing
+                  body tag:
+                </p>
+                <pre><code class="text-left steps"><span class="washed">&lt;body&gt</span>
+  &lt;input type="text" bd-value="name"&gt;
+  
+  &lt;script src="./boydog-client"&gt;&lt;/script&gt;
+  &lt;script&gt;
+    boydog.init() // Or `boydog.init("#my_div", "my_host:9090")` for a custom scope and host
+  &lt;/script&gt;
+<span class="washed">&lt;/body&gt</span>
+</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="title text-center">Contributing</h3>
+        <br />
+        <div class="row text-center">
+          <div class="column">
+            <i class="fa fa-2x fa-caret-square-o-right"></i>
+            <p>
+              The <a href="https://github.com/boydoglabs/boydog-demo" title="demo page">boydog-demo</a> page (this page)
+            </p>
+          </div>
+          <div class="column">
+            <i class="fa fa-2x fa-server"></i>
+            <p>The <a href="https://github.com/boydoglabs/boydog" title="Contributing">boydog</a> NPM module.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <section class="container">
+          <img src="./img/small-main-logo.png" width="120" />
+          <p>
+            <a class="boydoglabs-link" target="_blank" href="https://github.com/boydoglabs/" title="BoyDogLabs"
+              >BoyDogLabs</a
+            >
+            © 2020
+          </p>
+        </section>
+      </footer>
+    </main>
+
+    <!-- Plugins begin TODO: move into clientthat become bundle.js -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+      integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" src="./js/xpath-micro.js"></script>
+
     <div>
-      thing: <input bd-model="thing" />
-      <br/>
-      <div bd-content="thing"></div>
-      <br/>
-      <br/>
-      <br/>
-      <input bd-model="word" />
-      <br/>
-      [bd-content]: <div bd-content="'sample ' + word + ';;;'">href</div></br/>
-      [bd-html]: <div bd-html="'sample ' + word + ';;;'">href</div></br/>
-      [bd-dangerous-html]: <div bd-dangerous-html="'sample ' + word + ';;;'">href</div></br/>
-      <br/>
-      <br/>
-      <br/>
-      data.name: <input bd-model="data.name" /> data.address: <input bd-model="data.address" />
-      <br />
-      data.name content:
-      <div bd-content="data.name"></div>
-      data.address content:
-      <div bd-content="data.address"></div>
+      <div id="crowwwd">
+        <div id="crowwwd-partyon">
+          <!-- Self -->
+          <div
+            class="absolute z-50"
+            :style="{'left': `${users.self.pos.x - CROWWWD.X_OFFSET}px`, 'top': `${users.self.pos.y - CROWWWD.Y_OFFSET}px` }"
+          >
+            <div class="relative inline-block">
+              <img
+                class="inline-block object-cover w-12 h-12 rounded-full"
+                :src="users.self.pic"
+                :alt="users.self.name"
+              />
+              <span
+                class="absolute bottom-0 left-0 inline-block w-3 h-3 border border-white rounded-full"
+                :class="{'bg-green-600': users.self.status === CROWWWD.ONLINE, 'bg-yellow-600': users.self.status === CROWWWD.AWAY}"
+              ></span>
+              <span class="text-sm text-white">{{users.self.name}}</span>
+            </div>
+          </div>
 
-      <br />
-      data content:
-      <div bd-content="data"></div>
-      <br />
-      data content JSON:
-      <div bd-content="JSON.stringify(data)"></div>
-
-      <br />
-      <br />
-      <br />
-      number:
-      <div bd-content="number"></div>
-      <br />
-      <br />
-      <br />
-      list:
-      <div bd-content="list"></div>
-      <br />
-      <br />
-      <br />
-      bd-for:
-      <ul>
-        <li bd-for="item in items" bd-content="item.todo">...</li>
-      </ul>
+          <!-- Others -->
+          <div
+            v-for="user in users.others"
+            :key="user.id"
+            class="absolute z-50"
+            :style="{'left': `${user.pos.x}px`, 'top': `${user.pos.y}px` }"
+          >
+            <div class="relative inline-block">
+              <img class="inline-block object-cover w-12 h-12 rounded-full" :src="user.pic" :alt="user.name" />
+              <span
+                class="absolute bottom-0 left-0 inline-block w-3 h-3 border border-white rounded-full"
+                :class="{'bg-green-600': user.status === CROWWWD.ONLINE, 'bg-yellow-600': user.status === CROWWWD.AWAY}"
+              ></span>
+              <span class="text-sm text-white">{{user.name}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <script>
-      const socket = new ReconnectingWebSocket("ws://localhost:3091")
 
-      const allWindowProperties = Object.getOwnPropertyNames(window)
-
-      const attrIterables = {
-        "bd-for": (val, el) => {
-          if (!val) val = []
-
-          const elType = el.cloneNode()
-          elType.removeAttribute("bd-for")
-          const n = val.length
-          
-          console.log(">>>", val, el)
-
-          // Process element 0
-          el.innerHTML = JSON.stringify(val[val.length - n])
-
-          // Process all other elements
-          for (let i = n - 1; i > 0; i--) {
-            const elToInsert = elType.cloneNode()
-            elToInsert.innerHTML = JSON.stringify(val[i])
-            el.insertAdjacentElement("afterend", elToInsert)
-          }
-        }
-      }
-      const attrCalculables = {
-        "bd-id": "id",
-        "bd-class": "className",
-        "bd-content": "textContent",
-        "bd-html": (val, el) => {
-          let temp = document.createElement("div")
-          temp.textContent = val.replace(/[^\w. ]/gi, (c) => {
-            return "&#" + c.charCodeAt(0) + ";"
-          })
-          el.innerHTML = temp.innerHTML
-        },
-        "bd-dangerous-html": "innerHTML",
-        "bd-src": "src",
-      }
-
-      let scope = {}
-      let modelScope = {} // For processing inputs and textareas (flat structure)
-      let calcScope = {} // For processing calc changes (flat structure)
-
-      const initModels = () => {
-        $("[bd-model]").each((i, el) => {
-          const arrPath = _.toPath(el.getAttribute("bd-model"))
-
-          _.set(scope, arrPath, "")
-
-          const flatPath = arrPath.join(">")
-          if (modelScope[flatPath] !== []) modelScope[flatPath] = []
-          modelScope[flatPath].push(() => {
-            const currentVal = _.get(scope, arrPath)
-            if (el.value === currentVal) return // Bailout if there is no need to update
-
-            const selS = el.selectionStart
-            const selE = el.selectionEnd
-            el.value = currentVal // Set new value
-            el.selectionStart = selS
-            el.selectionEnd = selE
-            return
-          })
-
-          $(el).on("input", (ev) => {
-            const val = ev.target.value
-            socket.send(JSON.stringify({ p: flatPath, v: val }))
-            _.set(scope, arrPath, val)
-          })
-        })
-      }
-
-      const initIterables = () => {
-        $("[bd-for]").each((i, el) => {
-          const attrVal = el.getAttribute("bd-for")
-          const [iterator, iterable] = attrVal.split("in").map(e => e.trim())
-          
-          console.log({iterator, iterable})
-        })
-      }
-
-      const initCalculables = () => {
-        const addCalculable = (path, attr, attrVal, el) => {
-          if (!Array.isArray(calcScope[path])) calcScope[path] = []
-
-          const sandboxFn = new Function(
-            "sandbox",
-            `with (sandbox) { try { return ${attrVal}; } catch(e) { return ""; } }`
-          )
-
-          const parentsArr = path.split(">")
-          parentsArr.pop()
-
-          if (typeof attrCalculables[attr] === "function") {
-            calcScope[path].push(() => {
-              //console.log("?", attr)
-              attrCalculables[attr](sandboxFn(scope), el)
-              return
-            })
-          } else {
-            calcScope[path].push(() => {
-              el[attrCalculables[attr]] = sandboxFn(scope)
-              // Update parents
-              parentsArr.forEach((p) => {
-                if (calcScope[p]) calcScope[p].forEach((f) => f())
-              })
-              return
-            })
-          }
-        }
-
-        Object.keys(attrCalculables).forEach((attr) => {
-          $(`[${attr}]`).each((i, el) => {
-            const attrVal = el.getAttribute(attr)
-            const pathObj = acorn.parse(attrVal, { ecmaVersion: 8 })
-
-            let found = []
-            acorn.walk.simple(pathObj, {
-              Identifier(node) {
-                const path = node.name
-                found.push(path)
-              },
-              MemberExpression(node) {
-                const path = astring.generate(node)
-                found.push(path)
-              },
-            })
-
-            // Clear variables that already exist in the browser
-            for (let i = 0; i < found.length; i++) {
-              if (_.get(window, found[i]) !== undefined) found[i] = undefined
-            }
-            found = found.filter((e) => e !== undefined)
-
-            // Remove parents
-            for (let i = 0; i < found.length - 1; i++) {
-              if (found[i + 1].match(new RegExp(`^${found[i]}`))) {
-                found[i] = undefined
-                continue
-              }
-            }
-            found = found.filter((e) => e !== undefined)
-
-            // Add calculable
-            found.forEach((p) => addCalculable(_.toPath(p).join(">"), attr, attrVal, el))
-          })
-        })
-      }
-
-      initModels()
-      initIterables()
-      initCalculables()
-
-      console.log("BoyDog started with the following scopes:", {scope, modelScope, calcScope})
-
-      const specialActions = {
-        "@refresh": () => {
-          Object.values(calcScope).forEach((a) => {
-            a.forEach((f) => f())
-          })
-        },
-      }
-
-      // Socket events
-      socket.onopen = () => {
-        console.log("WebSocket open")
-      }
-      socket.onerror = (error) => {
-        console.log(`WebSocket error: ${error}`)
-      }
-      socket.onmessage = (msg) => {
-        msg = msg.data
-
-        // For special actions
-        if (msg[0] === "@") return specialActions[msg]()
-
-        // For normal commands
-        msg = JSON.parse(msg)
-        
-        // TODO: Fix "boydog-noot-quicktype-bug" from Mattsz
-        if (msg.t !== "p") {
-          _.set(scope, msg.p.split(">"), msg.v)
-          
-          if (modelScope[msg.p] !== undefined) modelScope[msg.p].forEach((f) => f()) // Update bd-models
-        }
-
-        if (calcScope[msg.p] !== undefined) calcScope[msg.p].forEach((f) => f()) // Update calculables
-      }
-    </script>
+    <script src="./dist/crowwwd-client.bundle.js"></script>
   </body>
 </html>
