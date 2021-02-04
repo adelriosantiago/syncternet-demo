@@ -4,6 +4,8 @@
 
 const Vue = require("./vendor/vue.min.js")
 const ReconnectingWebSocket = require("reconnecting-websocket")
+const xpath = require("./vendor/xpath-micro.js")
+console.log("x", xpath)
 
 window.CROWWWD = {
   ONLINE: 1,
