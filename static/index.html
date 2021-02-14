@@ -358,39 +358,21 @@ boydog.init(scope, server)
 
     <div>
       <div id="crowwwd">
-        <!-- Self -->
+        UUID: {{ private.UUID }} username: {{private.username}}
+        <!-- Party plugin -->
         <div
+          v-for="(data, username) in public.party"
+          :key="username"
           class="absolute z-50"
-          :style="{'left': `${users.self.pos.x - CROWWWD.X_OFFSET}px`, 'top': `${users.self.pos.y - CROWWWD.Y_OFFSET}px` }"
+          :style="{'left': `${data.pos.x}px`, 'top': `${data.pos.y}px` }"
         >
           <div class="relative inline-block">
-            <img
-              class="inline-block object-cover w-12 h-12 rounded-full"
-              :src="users.self.pic"
-              :alt="users.self.name"
-            />
+            <img class="inline-block object-cover w-12 h-12 rounded-full" :src="data.pic" :alt="username" />
             <span
               class="absolute bottom-0 left-0 inline-block w-3 h-3 border border-white rounded-full"
-              :class="{'bg-green-600': users.self.status === CROWWWD.ONLINE, 'bg-yellow-600': users.self.status === CROWWWD.AWAY}"
+              :class="{'bg-green-600': data.status === CROWWWD.ONLINE, 'bg-yellow-600': data.status === CROWWWD.AWAY}"
             ></span>
-            <span class="text-sm text-white">{{users.self.name}}</span>
-          </div>
-        </div>
-
-        <!-- Others -->
-        <div
-          v-for="user in users.others"
-          :key="user.id"
-          class="absolute z-50"
-          :style="{'left': `${user.pos.x}px`, 'top': `${user.pos.y}px` }"
-        >
-          <div class="relative inline-block">
-            <img class="inline-block object-cover w-12 h-12 rounded-full" :src="user.pic" :alt="user.name" />
-            <span
-              class="absolute bottom-0 left-0 inline-block w-3 h-3 border border-white rounded-full"
-              :class="{'bg-green-600': user.status === CROWWWD.ONLINE, 'bg-yellow-600': user.status === CROWWWD.AWAY}"
-            ></span>
-            <span class="text-sm text-white">{{user.name}}</span>
+            <span class="text-sm text-white">{{username}}</span>
           </div>
         </div>
       </div>

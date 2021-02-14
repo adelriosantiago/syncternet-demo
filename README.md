@@ -16,11 +16,6 @@ const users = {
 
 A matching UUID and username is what makes an user an authenticated one. For this reason UUIDs should never be shared to the client.
 
-As an example we use 2 plugins:
-
-- Party: Allows people to see where others are and shows an avatar near the DOM element over the cursor.
-- Emoticons: Allows people to add reactions to elements. Inspired by Facebooks video reactions.
-
 Public information about the each user for each plugin is stored in `public`. For example:
 
 ```js
@@ -65,26 +60,25 @@ const plugins = {
 }
 ```
 
-When a new server is started we begin listening to the `onMessage` event. This is when a WS message is received. This may serve to update plugin data or for auth purposes. Each case is described below:
+When a new server is started we begin listening to the `msg` event. This is when a WS message is received. This may serve to update plugin data or for auth purposes. Each case is described below:
 
 - - `"_new"` is received: This is a new user. Follow the steps,
 
     1. Add a new, randomly-generated UUID and username pair to `users`.
-    2. Server sends `"_new|<UUID>|<username>"` to the client.
+    2. Server sends `"_keys|<UUID>|<username>"` to the client.
     3. Send initial plugin information like `"_plugins|<plugins>"`.
 
   - `"_continue|<UUID>|<username>"` is received: This is supposedly an existing user. Test if `users[<UUID>] === <username>`. There are 2 possibilities:
-
-    - It does not match: Don't continue and treat the user as a completely new user as described in previous steps.
-
-    - It matches: Plugin information is sent as described in previous steps.
-
-  - In all other cases, plugin information about another user is received and the following steps are taken:
-
-    1. Server receives `"party|<UUID>|{<plugin data>}"`.
+- It does not match: Don't continue and treat the user as a completely new user as described in previous steps.
+  
+- It matches: Plugin information is sent as described in previous steps.
+  
+- In all other cases, plugin information about another user is received and the following steps are taken:
+  
+  1. Server receives `"party|<UUID>|{<plugin data>}"`.
     2. `public.party[<UUID>]` is updated with plugin data.
     3. Get username from `users`.
-    4. Server broadcasts `"party|<username>|{<plugin data>}"` to all clients <u>except</u> the sender.
+    4. Server broadcasts `"party|<username>|{<plugin data>}"` to all clients <u>including</u> the sender.
 
 ### Client
 
@@ -121,12 +115,12 @@ new Vue({
 
 When a new user loads a crowwwd page we do:
 
-1. Check if auth is present in `localStorage['crowwwd:auth']`. There are two possibilities with different responses:
+1. Check if auth is present in `localStorage.getItem('crowwwd:auth')`. There are two possibilities with different responses:
    - There is no auth data: `"_new"` is sent to the server as it a completely new user.
    - This is a returning user: `"_continue|<UUID>|<username>"` is sent.
-2. Begin listening to the `onMessage` event. This is when a WS message is received. This may serve to update plugin data or for auth purposes. Each case is described below:
+2. Begin listening to the `msg` event. This is when a WS message is received. This may serve to update plugin data or for auth purposes. Each case is described below:
 
-	- `"_new|<UUID>|<username>"` is received: Update the UUID and username in `data.private`.
+	- `"_keys|<UUID>|<username>"` is received: Update the UUID and username in `data.private`.
 	- `"_plugins|<plugins>"` is received: Add all missing HTMLs. Some of them may be already added manually by the developer.
 	- In all other cases, plugin information about another user is received and the following steps are taken:
 		1.  `"party|<username>|{<plugin data>}"` is received. Note how the UUID is not present.

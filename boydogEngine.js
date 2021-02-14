@@ -8,29 +8,18 @@ const WS_CLOSING = 2
 const WS_CLOSED = 3
 
 let wsServer
+
 let public = {}
+let users = {}
 
 const action = {
-  "@init": (socket, msg) => {
+  _new: (socket, UUID, msg) => {
     console.log("action: @init")
     socket.send(`@init|${JSON.stringify(public)}`)
   },
-  "@example": (socket, msg) => {
+  _connection: (socket, UUID, msg) => {
     console.log("action: @example")
   },
-}
-
-const message = (socket, msg) => {
-  console.log("msg", msg)
-
-  public[msg.p] = msg.v
-
-  // Send to clients
-  setTimeout(() => {
-    wsServer.clients.forEach((client) => {
-      if (client.readyState === WS_OPEN) client.send(JSON.stringify({ p: msg.p, v: msg.v }))
-    })
-  }, 0)
 }
 
 const init = (_wsServer, _public) => {
