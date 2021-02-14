@@ -104,14 +104,11 @@ new Vue({
         //this.public[plugin][username] = JSON.parse(data) // TODO: Use merge/assign
         this.$set(this.public[plugin], username, JSON.parse(data))
         //_set(this.public[plugin], username, JSON.parse(data))
-
-        console.log("+++++++++++", this.public)
       } catch (e) {
         console.log(`Message or action '${msg}' throws ${e}.`)
       }
     },
     wsSend(plugin, UUID, data) {
-      console.log("sending", plugin, UUID, data, window.CROWWWD.socket)
       window.CROWWWD.socket.send(plugin + "|" + UUID + "|" + JSON.stringify(data))
     },
   },
