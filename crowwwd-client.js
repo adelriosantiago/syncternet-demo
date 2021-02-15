@@ -21,21 +21,8 @@ new Vue({
   el: "#crowwwd",
   data: {
     public: {
-      party: {
-        TESTUSER: {
-          pic: "https://via.placeholder.com/150",
-          status: CROWWWD.ONLINE,
-          xpath: "",
-          pos: { x: 10, y: 10 },
-        },
-        "user-qwe123": {
-          pic: "https://via.placeholder.com/150",
-          status: CROWWWD.AWAY,
-          xpath: "",
-          pos: { x: 50, y: 40 },
-        },
-      },
-    }, // Realtime data, every user has a copy of this with the same contents
+      // Realtime data, every user has a copy of this with the same contents
+    },
     private: {
       UUID: "SECRET_UUID",
       username: "TESTUSER",
@@ -45,13 +32,13 @@ new Vue({
   mounted() {
     this.startWSClient()
 
-    // Party plugin (original code)
+    // Party plugin starts here (original code)
     document.onmouseover = (e) => {
       e = e || window.event
       const el = e.target || el.srcElement
 
       const rect = el.getBoundingClientRect()
-      const newData = {
+      const party = {
         xpath: xpath(el),
         pos: {
           x: rect.left + window.scrollX,
@@ -59,8 +46,9 @@ new Vue({
         },
       }
 
-      this.wsSend("party", this.private.UUID, newData)
+      this.wsSend({ party })
     }
+    // Party plugin ends here
   },
   methods: {
     startWSClient() {
@@ -80,14 +68,16 @@ new Vue({
       console.log(`WebSocket error: ${err}`)
     },
     onWSMessage(msg) {
-      const specialActions = ["_keys", "_plugins"]
+      const specialActions = ["@keys", "@plugins"]
       const execSpecialAction = {
-        _keys: (username, data) => {
+        "@keys": (data) => {
           this.private.UUID = data.UUID
           this.private.username = data.username
         },
-        _plugins: (username, data) => {
+        "@plugins": (data) => {
           console.log("action: _plugins DATA:::", data)
+
+          // TODO: Inject html (and create user?)
 
           //this.public.party = {}
           //this.public.emoticons = {}
@@ -97,19 +87,18 @@ new Vue({
       }
 
       try {
-        const [, plugin, username, data] = msg.match(/^(\w+)\|([\w-]+)\|(.*$)/) // Spec: https://regex101.com/r/YLyEmo/1
+        const [, username, data] = msg.match(/^([@\w-]+)\|(.*$)/) // Spec: https://regex101.com/r/dqa4nI/3
 
-        if (specialActions.includes(plugin)) return execSpecialAction[plugin](username, JSON.parse(data))
+        if (specialActions.includes(username)) return execSpecialAction[username](JSON.parse(data))
 
-        //this.public[plugin][username] = JSON.parse(data) // TODO: Use merge/assign
-        this.$set(this.public[plugin], username, JSON.parse(data))
-        //_set(this.public[plugin], username, JSON.parse(data))
+        if (this.public[username] === undefined) return this.$set(this.public, username, JSON.parse(data))
+        Object.assign(this.public[username], JSON.parse(data))
       } catch (e) {
         console.log(`Message or action '${msg}' throws ${e}.`)
       }
     },
-    wsSend(plugin, UUID, data) {
-      window.CROWWWD.socket.send(plugin + "|" + UUID + "|" + JSON.stringify(data))
+    wsSend(data) {
+      window.CROWWWD.socket.send(this.private.UUID + "|" + JSON.stringify(data))
     },
   },
 })

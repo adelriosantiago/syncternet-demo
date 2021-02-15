@@ -29,13 +29,10 @@ let plugins = {
   },
 }
 
-const specialActions = ["_new", "_connection"]
+const specialActions = ["@specialActionA"]
 const execSpecialAction = {
-  _new: (socket, UUID, data) => {
-    console.log("action: _new")
-  },
-  _connection: (socket, UUID, data) => {
-    console.log("action: _connection")
+  "@specialAction": (socket, data) => {
+    console.log("@specialAction")
   },
 }
 
@@ -50,7 +47,7 @@ const init = (pluginsToLoad, server) => {
   wsServer.on("connection", (socket) => {
     console.log("New client connected")
 
-    socket.send(`_plugins|undefined|${JSON.stringify(pluginInject())}`) // Send plugins to inject
+    socket.send(`@plugins|${JSON.stringify(pluginInject())}`) // Send plugins to inject
 
     // Create new session or continue an old one
     const crId = "" // TODO: Get from url, a, b, c
@@ -60,22 +57,21 @@ const init = (pluginsToLoad, server) => {
       const newUsername = haikunator.haikunate()
 
       users[newUUID] = newUsername
-      socket.send(`_keys|undefined|${JSON.stringify({ UUID: newUUID, username: newUsername })}`)
+      socket.send(`@keys|${JSON.stringify({ UUID: newUUID, username: newUsername })}`)
     }
 
     socket.on("message", (msg) => {
-      console.log("msg rx", msg)
-
       try {
-        const [, plugin, UUID, data] = msg.match(/^(\w+)\|([\w-]+)\|(.*$)/) // Spec: https://regex101.com/r/YLyEmo/1
-        if (specialActions.includes(plugin)) return execSpecialAction[plugin](socket, UUID, JSON.parse(data))
+        const [, UUID, data] = msg.match(/^([@\w-]+)\|(.*$)/) // Spec: https://regex101.com/r/dqa4nI/3
+        if (specialActions.includes(UUID)) return execSpecialAction[UUID](socket, JSON.parse(data))
 
-        _set(public, UUID, JSON.parse(data))
+        if (public[UUID] === undefined) public[UUID] = {}
+        Object.assign(public[UUID], JSON.parse(data))
 
         // Broadcast new information
         wsServer.clients.forEach((client) => {
           //if (client === socket) return // To skip sender (currently we broadcast to everyone)
-          if (client.readyState === WS_OPEN) client.send(`${plugin}|${users[UUID]}|${data}`)
+          if (client.readyState === WS_OPEN) client.send(users[UUID] + "|" + data) // TODO: If a middleware is ever implemented this needs to come from public, not from the same data that arrived
         })
       } catch (e) {
         console.log(`Message or action '${msg}' throws ${e}.`)
