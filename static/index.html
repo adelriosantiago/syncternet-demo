@@ -362,7 +362,11 @@ boydog.init(scope, server)
         <div v-for="(C, username) in public" :key="username">
           plugin: {{C}} <br />
           username: {{username}} <br />
-          <div class="absolute z-50" :style="{'left': `${C.party.pos.x}px`, 'top': `${C.party.pos.y}px` }">
+          <div
+            class="absolute z-50"
+            style="pointer-events: none"
+            :style="{'left': `${C.party.pos.x}px`, 'top': `${C.party.pos.y}px` }"
+          >
             <img class="inline-block object-cover w-12 h-12 rounded-full" :src="C.party.pic" :alt="username" />
             <span
               class="absolute bottom-0 left-0 inline-block w-3 h-3 border border-white rounded-full"

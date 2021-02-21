@@ -1,6 +1,6 @@
 // - Rock
-// - Plastic
-// -> Paper
+// -> Plastic
+// - Paper
 
 const Vue = require("./vendor/vue.min.js")
 const ReconnectingWebSocket = require("reconnecting-websocket")
@@ -12,7 +12,7 @@ const $ = require("./vendor/cash.min.js")
 window.CROWWWD = {
   socket: undefined,
   ONLINE: 1,
-  AWAY: 1,
+  AWAY: 0,
   X_OFFSET: 15,
   Y_OFFSET: 15,
 }
@@ -38,7 +38,7 @@ new Vue({
       const el = e.target || el.srcElement
 
       const rect = el.getBoundingClientRect()
-      const party = {
+      const newData = {
         xpath: xpath(el),
         pic: "https://via.placeholder.com/150",
         status: window.CROWWWD.ONLINE,
@@ -48,7 +48,7 @@ new Vue({
         },
       }
 
-      this.wsSend({ party })
+      this.wsSend("party", newData)
     }
     // Party plugin ends here
   },
@@ -89,18 +89,18 @@ new Vue({
       }
 
       try {
-        const [, username, data] = msg.match(/^([@\w-]+)\|(.*$)/) // Spec: https://regex101.com/r/dqa4nI/3
+        const [, username, plugin, data] = msg.match(/^([@\w-]+)\|(.*)\|(.*)$/) // Spec: https://regex101.com/r/dqa4nI/4
 
         if (specialActions.includes(username)) return execSpecialAction[username](JSON.parse(data))
 
-        if (this.public[username] === undefined) return this.$set(this.public, username, JSON.parse(data))
-        Object.assign(this.public[username], JSON.parse(data))
+        if (this.public[username] === undefined) return this.$set(this.public, username, { [plugin]: JSON.parse(data) })
+        Object.assign(this.public[username][plugin], JSON.parse(data))
       } catch (e) {
         console.log(`Message or action '${msg}' throws ${e}.`)
       }
     },
-    wsSend(data) {
-      window.CROWWWD.socket.send(this.private.UUID + "|" + JSON.stringify(data))
+    wsSend(plugin, data) {
+      window.CROWWWD.socket.send(this.private.UUID + "|" + plugin + "|" + JSON.stringify(data))
     },
   },
 })

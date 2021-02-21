@@ -6,6 +6,7 @@ const ws = require("ws")
 const _pick = require("lodash.pick")
 const _get = require("lodash.get")
 const _set = require("lodash.set")
+const _toPath = require("lodash.topath")
 const uuid = require("uuid")
 const haikunator = new (require("haikunator"))({
   defaults: {
@@ -18,14 +19,42 @@ const WS_OPEN = 1
 const WS_CLOSING = 2
 const WS_CLOSED = 3
 
-let public = {}
+let wsServer = undefined
 let users = {}
+let public = {}
+let private = {}
+
 let plugins = {
   party: {
-    html: "<div>party plugin</div>",
+    frontend: {
+      html: "<div>party plugin</div>",
+      middleware: {},
+    },
+    backend: {
+      middleware: {
+        $: (UUID, userPrivate, userPublic, rx) => {
+          // TODO: Make the middleware smart enough to know if changing $ (or root), party.pos or party.pos.x, or even otherPlugin.a.b.c.d, etc
+          rx.status = 1
+
+          clearTimeout(userPrivate.timer)
+          userPrivate.timer = setTimeout(() => {
+            rx.status = 0
+            console.log("STATUS OFF") // TODO: Refresh clients with new status
+          }, 3000)
+
+          return rx
+        },
+      },
+    },
   },
   emoticons: {
-    html: "<div>emoticons plugin</div>",
+    frontend: {
+      html: "<div>emoticons plugin</div>",
+      middleware: {}, // TODO
+    },
+    backend: {
+      middleware: {},
+    },
   },
 }
 
@@ -38,16 +67,32 @@ const execSpecialAction = {
 
 const pluginInject = () => {
   return `<div id="crowwwd">${Object.values(plugins)
-    .map((p) => p.html)
+    .map((p) => p.frontend.html)
     .join("")}</div>`
 }
 
+const send = (socket, username, plugin, data) => {
+  if (socket.readyState === WS_OPEN) socket.send(username + "|" + plugin + "|" + data)
+}
+
+const broadcastData = (username, plugin, data) => {
+  wsServer.clients.forEach((socket) => send(socket, username, plugin, data))
+}
+
+const sendAllToClient = (socket) => {
+  Object.keys(public).forEach((UUID) => {
+    Object.keys(public[UUID]).forEach((plugin) => {
+      send(socket, users[UUID], plugin, JSON.stringify(public[UUID][plugin]))
+    })
+  })
+}
+
 const init = (pluginsToLoad, server) => {
-  const wsServer = new ws.Server({ server })
+  wsServer = new ws.Server({ server })
   wsServer.on("connection", (socket) => {
     console.log("New client connected")
 
-    socket.send("@plugins" + "|" + JSON.stringify(pluginInject())) // Send plugins to inject
+    send(socket, "@plugins", "", JSON.stringify(pluginInject()))
 
     // Create new session or continue an old one
     const crId = ""
@@ -57,25 +102,29 @@ const init = (pluginsToLoad, server) => {
       const newUsername = haikunator.haikunate()
 
       users[newUUID] = newUsername
-      socket.send("@keys" + "|" + JSON.stringify({ UUID: newUUID, username: newUsername }))
+
+      send(socket, "@keys", "", JSON.stringify({ UUID: newUUID, username: newUsername }))
 
       // Send existing public data
-      Object.keys(public).forEach((UUID) => socket.send(users[UUID] + "|" + JSON.stringify(public[UUID])))
+      sendAllToClient(socket)
     }
 
     socket.on("message", (msg) => {
       try {
-        const [, UUID, data] = msg.match(/^([@\w-]+)\|(.*$)/) // Spec: https://regex101.com/r/dqa4nI/3
+        let [, UUID, plugin, data] = msg.match(/^([@\w-]+)\|(.*)\|(.*)$/) // Spec: https://regex101.com/r/dqa4nI/4
+
+        // For functions
         if (specialActions.includes(UUID)) return execSpecialAction[UUID](socket, JSON.parse(data))
 
+        // For plugin data
         if (public[UUID] === undefined) public[UUID] = {}
-        Object.assign(public[UUID], JSON.parse(data))
+        if (private[UUID] === undefined) private[UUID] = {}
 
-        // Broadcast new information
-        wsServer.clients.forEach((client) => {
-          //if (client === socket) return // To skip sender (currently we broadcast to everyone)
-          if (client.readyState === WS_OPEN) client.send(users[UUID] + "|" + data) // TODO: If a middleware is ever implemented this needs to come from public, not from the same data that arrived
-        })
+        data = JSON.parse(data)
+        data = plugins[plugin].backend.middleware["$"](UUID, private[UUID], public[UUID], data)
+        Object.assign(public[UUID], { [plugin]: data })
+
+        broadcastData(users[UUID], plugin, JSON.stringify(data))
       } catch (e) {
         console.log(`Message or action '${msg}' throws ${e}.`)
       }
