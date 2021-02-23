@@ -32,7 +32,7 @@ let plugins = {
     },
     backend: {
       middleware: {
-        $: (UUID, userPrivate, userPublic, data, sync) => {
+        $: (data, sync, UUID, userPrivate) => {
           // TODO: Make the middleware smart enough to know if changing $ (or root), party.pos or party.pos.x, or even otherPlugin.a.b.c.d, etc
           data.status = 1
 
@@ -128,11 +128,11 @@ const init = (pluginsToLoad, server) => {
 
         data = JSON.parse(data)
         data = plugins[plugin].backend.middleware["$"](
+          data,
+          buildSync(users[UUID], plugin),
           UUID,
           private[UUID],
-          public[UUID],
-          data,
-          buildSync(users[UUID], plugin)
+          public[UUID]
         )
         Object.assign(public[UUID], { [plugin]: data })
 
