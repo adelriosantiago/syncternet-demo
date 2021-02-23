@@ -32,17 +32,17 @@ let plugins = {
     },
     backend: {
       middleware: {
-        $: (UUID, userPrivate, userPublic, rx) => {
+        $: (UUID, userPrivate, userPublic, data, sync) => {
           // TODO: Make the middleware smart enough to know if changing $ (or root), party.pos or party.pos.x, or even otherPlugin.a.b.c.d, etc
-          rx.status = 1
+          data.status = 1
 
           clearTimeout(userPrivate.timer)
           userPrivate.timer = setTimeout(() => {
-            rx.status = 0
-            console.log("STATUS OFF") // TODO: Refresh clients with new status
+            data.status = 0
+            sync(data)
           }, 3000)
 
-          return rx
+          return data
         },
       },
     },
@@ -87,6 +87,12 @@ const sendAllToClient = (socket) => {
   })
 }
 
+const buildSync = (username, plugin) => {
+  return (data) => {
+    broadcastData(username, plugin, JSON.stringify(data))
+  }
+}
+
 const init = (pluginsToLoad, server) => {
   wsServer = new ws.Server({ server })
   wsServer.on("connection", (socket) => {
@@ -121,7 +127,13 @@ const init = (pluginsToLoad, server) => {
         if (private[UUID] === undefined) private[UUID] = {}
 
         data = JSON.parse(data)
-        data = plugins[plugin].backend.middleware["$"](UUID, private[UUID], public[UUID], data)
+        data = plugins[plugin].backend.middleware["$"](
+          UUID,
+          private[UUID],
+          public[UUID],
+          data,
+          buildSync(users[UUID], plugin)
+        )
         Object.assign(public[UUID], { [plugin]: data })
 
         broadcastData(users[UUID], plugin, JSON.stringify(data))
