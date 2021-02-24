@@ -79,10 +79,9 @@ const initVue = () => {
             this.private.username = data.username
           },
           "@plugins": (data) => {
-            if (!$("#crowwwd").length) {
-              $("body").append(data)
-              initVue() // Restart now that #crowwwd exists
-            }
+            if ($("#crowwwd").length) return
+            $("body").append(data)
+            initVue() // Restart now that #crowwwd exists
           },
         }
 
