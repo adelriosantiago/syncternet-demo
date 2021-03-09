@@ -2,6 +2,7 @@
 // -> Plastic
 // - Paper
 
+const fs = require("fs")
 const ws = require("ws")
 const _pick = require("lodash.pick")
 const _get = require("lodash.get")
@@ -13,6 +14,8 @@ const haikunator = new (require("haikunator"))({
     tokenLength: 6,
   },
 })
+
+const tailwindScoped = fs.readFileSync("./vendor/tailwind.min.css", { encoding: "utf8", flag: "r" })
 
 const WS_CONNECTING = 0
 const WS_OPEN = 1
@@ -79,6 +82,9 @@ const execSpecialAction = {
 
 const pluginInject = () => {
   return `
+  <style>
+    ${tailwindScoped}
+  </style>
   <div id="crowwwd">
     <div v-for="(C, username) in public" :key="username">
       ${Object.values(plugins)
