@@ -9,6 +9,7 @@ const _get = require("lodash.get")
 const _set = require("lodash.set")
 const _toPath = require("lodash.topath")
 const uuid = require("uuid")
+const uptill = require("uptill")
 const haikunator = new (require("haikunator"))({
   defaults: {
     tokenLength: 6,
@@ -16,7 +17,7 @@ const haikunator = new (require("haikunator"))({
 })
 
 const tailwindScoped = fs.readFileSync("./vendor/tailwind.min.css", { encoding: "utf8", flag: "r" })
-const plugins = require("./plugins/export.js")
+let plugins = require("./plugins/plugins.js") // Plugin definitions are added to this let variable
 
 const WS_CONNECTING = 0
 const WS_OPEN = 1
@@ -35,18 +36,12 @@ const execSpecialAction = {
   },
 }
 
-const pluginInject = () => {
-  return `
-  <style>
-    ${tailwindScoped}
-  </style>
-  <div id="crowwwd">
-    <div v-for="(C, username) in public" :key="username">
-      ${Object.values(plugins)
-        .map((p) => p.frontend.html)
-        .join("")}
-    </div>
-  </div>`
+const pluginInjectString = async () => {
+  let definitions = {}
+  for (const p of Object.keys(plugins))
+    definitions[p] = await fs.promises.readFile(`${__dirname}/plugins/${p}.html`, "utf8")
+
+  return JSON.stringify(definitions)
 }
 
 const send = (socket, username, plugin, data) => {
@@ -73,10 +68,11 @@ const buildSync = (username, plugin) => {
 
 const init = (pluginsToLoad, server) => {
   wsServer = new ws.Server({ server })
-  wsServer.on("connection", (socket) => {
+  wsServer.on("connection", async (socket) => {
     console.log("New client connected")
 
-    send(socket, "@plugins", "", JSON.stringify(pluginInject()))
+    send(socket, "@style", "", tailwindScoped)
+    send(socket, "@plugins", "", await pluginInjectString())
 
     // Create new session or continue an old one
     const crId = ""

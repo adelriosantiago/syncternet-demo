@@ -7,7 +7,6 @@
     "start": "node ./server.js",
     "build": "browserify ./crowwwd-client.js -o ./static/dist/crowwwd-client.bundle.js",
     "build:tailwind": "postcss tailwind.source.css -o vendor/tailwind.min.css",
-    "build:plugins": "node build_plugins.js --prefix /plugins",
     "serve": "run-s build start",
     "dev": "nodemon --exec \"npm run serve\""
   },
@@ -20,6 +19,7 @@
     "lodash.pick": "^4.4.0",
     "lodash.set": "^4.3.2",
     "reconnecting-websocket": "^4.4.0",
+    "uptill": "^1.0.1",
     "ws": "^7.4.2"
   },
   "devDependencies": {

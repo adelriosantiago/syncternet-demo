@@ -20,7 +20,7 @@ window.CROWWWD = {
 
 const initVue = () => {
   return new Vue({
-    el: "#crowwwd",
+    el: "div#crowwwd",
     data: {
       public: {
         // Realtime data, every user has a copy of this with the same contents
@@ -33,26 +33,6 @@ const initVue = () => {
     created() {},
     mounted() {
       this.startWSClient()
-
-      // Party plugin starts here (original code)
-      document.onmouseover = (e) => {
-        e = e || window.event
-        const el = e.target || el.srcElement
-
-        const rect = el.getBoundingClientRect()
-        const newData = {
-          xpath: xpath(el),
-          pic: "https://via.placeholder.com/150",
-          status: window.CROWWWD.ONLINE,
-          pos: {
-            x: rect.left + window.scrollX,
-            y: rect.top + window.scrollY,
-          },
-        }
-
-        this.wsSend("party", newData)
-      }
-      // Party plugin ends here
     },
     methods: {
       startWSClient() {
@@ -72,23 +52,35 @@ const initVue = () => {
         console.log(`WebSocket error: ${err}`)
       },
       onWSMessage(msg) {
-        const specialActions = ["@keys", "@plugins"]
+        const specialActions = ["@keys", "@style", "@plugins"]
         const execSpecialAction = {
           "@keys": (data) => {
             this.private.UUID = data.UUID
             this.private.username = data.username
           },
+          "@style": (data) => {
+            if ($("style.crowwwd").length) return // Bailout when style is already there
+            $("body").append(`<style class="crowwwd">${data}</style>`) // Append tailwind
+          },
           "@plugins": (data) => {
-            if ($("#crowwwd").length) return
-            $("body").append(data)
+            if ($("div#crowwwd").length) return // Bailout when #crowwwd is already there
+
+            $("body").append("<div id='crowwwd'></div>")
+            Object.entries(JSON.parse(data)).forEach((e) => {
+              const ob = $(e[1]).filter((i, el) => el.nodeName != "#text") // Will result in HTML in ob[0] and JS in ob[1]
+              const html = `<div v-for="(C, username) in public" :key="username">${ob[0].outerHTML}</div>`
+              const js = ob[1].innerHTML
+              $("div#crowwwd").append(html)
+              eval(js)
+            })
             initVue() // Restart now that #crowwwd exists
           },
         }
 
         try {
-          const [, username, plugin, data] = msg.match(/^([@\w-]+)\|(.*)\|(.*)$/) // Spec: https://regex101.com/r/dqa4nI/4
+          const [, username, plugin, data] = msg.match(/^([@\w-]+)\|(\w+|)\|(.*)$/) // Spec: https://regex101.com/r/QMH6lD/1
 
-          if (specialActions.includes(username)) return execSpecialAction[username](JSON.parse(data))
+          if (specialActions.includes(username)) return execSpecialAction[username](data)
 
           if (this.public[username] === undefined)
             return this.$set(this.public, username, { [plugin]: JSON.parse(data) })
