@@ -57,7 +57,7 @@ const buildSync = (username, plugin) => {
   }
 }
 
-const init = (pluginsToLoad, server) => {
+const init = (server) => {
   wsServer = new ws.Server({ server })
   wsServer.on("connection", async (socket) => {
     console.log("New client connected")
@@ -78,14 +78,10 @@ const init = (pluginsToLoad, server) => {
     }
 
     socket.on("message", (msg) => {
-      let [, UUID, plugin, data] = msg.match(/^([@\w-]+)\|(.*)\|(.*)$/) // Spec: https://regex101.com/r/dqa4nI/4
-
-      //try {
+      let [, UUID, plugin, data] = msg.match(/^([@\w-]+)\|(\w+|)\|(.*)$/) // Spec: https://regex101.com/r/QMH6lD/1
+      if (!UUID) return
       if (specialActions.includes(UUID)) return execSpecialAction[UUID](socket, data) // Special functions
       data = JSON.parse(data)
-      //} catch (e) {
-      //console.log(`Message or action '${msg}' throws ${e}.`)
-      //}
 
       // For plugin data
       if (public[UUID] === undefined) public[UUID] = {}

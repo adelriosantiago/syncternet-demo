@@ -15,6 +15,7 @@ window.CROWWWD = {
   AWAY: 0,
   X_OFFSET: 15,
   Y_OFFSET: 15,
+  specialActions: ["@keys", "@style", "@plugins"],
 }
 
 // Append style and plugin templates
@@ -50,6 +51,18 @@ new Vue({
     this.startWSClient()
     for (s of plugins.map((p) => frontendExport.plugins[p].script)) eval(s) // Run all plugins scripts
   },
+  computed: {
+    execSpecialAction() {
+      return {
+        "@keys": (data) => {
+          data = JSON.parse(data)
+          this.private.UUID = data.UUID
+          this.private.username = data.username
+          window.localStorage.setItem("crId", data.UUID)
+        },
+      }
+    },
+  },
   methods: {
     startWSClient() {
       // Check for previous auth data
@@ -68,17 +81,6 @@ new Vue({
       console.log(`WebSocket error: ${err}`)
     },
     onWSMessage(msg) {
-      const specialActions = ["@keys", "@style", "@plugins"]
-      const execSpecialAction = {
-        // TODO: Move outside onWSMessage function
-        "@keys": (data) => {
-          data = JSON.parse(data)
-          this.private.UUID = data.UUID
-          this.private.username = data.username
-          window.localStorage.setItem("crId", data.UUID)
-        },
-      }
-
       // TODO: Move this middleware POC into frontendExports
       const mid = {
         $: (data, username, myself) => {
@@ -87,15 +89,9 @@ new Vue({
       }
 
       let [, username, plugin, data] = msg.match(/^([@\w-]+)\|(\w+|)\|(.*)$/) // Spec: https://regex101.com/r/QMH6lD/1
-
       if (!username) return
-
-      //try {
-      if (specialActions.includes(username)) return execSpecialAction[username](data)
+      if (window.CROWWWD.specialActions.includes(username)) return this.execSpecialAction[username](data)
       data = JSON.parse(data)
-      //} catch (e) {
-      //console.log(`Message or action '${msg}' throws ${e}.`)
-      //}
 
       // For plugin data
       data = mid["$"](data, username, username === this.private.username)

@@ -24,4 +24,4 @@ server.listen(port, () => {
 })
 
 // Init crowwwd TODO: Extract public and users data
-crowwwdServer.init(["party", "emoticons"], server)
+crowwwdServer.init(server)
