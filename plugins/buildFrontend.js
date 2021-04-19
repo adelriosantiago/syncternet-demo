@@ -1,5 +1,5 @@
 const fs = require("fs")
-const getDirectories = require("./getDirectories.js")
+const getDirectories = require("../vendor/getDirectories.js")
 
 const tailwindScoped = fs.readFileSync("./vendor/tailwind.min.css", { encoding: "utf8", flag: "r" })
 const plugins = getDirectories("./plugins")
@@ -14,5 +14,5 @@ for (const p of plugins) {
     middleware: {},
     script: fs.readFileSync(`./plugins/${p}/frontend.js`, "utf8"),
   }
-  fs.writeFileSync("./plugins/frontendExport.js", `module.exports = ${JSON.stringify(frontendExport)}`)
+  fs.writeFileSync("./exports/frontendExport.js", `module.exports = ${JSON.stringify(frontendExport)}`)
 }

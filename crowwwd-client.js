@@ -19,8 +19,7 @@ window.CROWWWD = {
 }
 
 // Append style and plugin templates
-
-const frontendExport = require("./plugins/frontendExport.js")
+const frontendExport = require("./exports/frontendExport.js")
 const plugins = Object.keys(frontendExport.plugins)
 
 if (!$("style.crowwwd").length) $("body").append(`<style class="crowwwd">${frontendExport.style}</style>`) // Append crowwwd style

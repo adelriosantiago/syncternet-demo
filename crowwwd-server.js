@@ -16,7 +16,7 @@ const haikunator = new (require("haikunator"))({
   },
 })
 
-const backendExport = require("./plugins/backendExport.js")
+const backendExport = require("./exports/backendExport.js")
 
 const WS_CONNECTING = 0
 const WS_OPEN = 1

@@ -8,7 +8,7 @@
     "build": "browserify ./crowwwd-client.js -o ./static/dist/crowwwd-client.bundle.js",
     "build:tailwind": "postcss tailwind.source.css -o vendor/tailwind.min.css",
     "build:frontend": "node ./plugins/buildFrontend.js",
-    "serve": "run-s build start",
+    "serve": "run-s build:frontend build start",
     "dev": "nodemon --exec \"npm run serve\""
   },
   "author": "BoyDog (www.boy.dog)",
