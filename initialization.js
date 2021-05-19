@@ -2,6 +2,7 @@
 // - Plastic
 // - Paper
 
+const ReconnectingWebSocket = require("reconnecting-websocket")
 const frontendExport = require("./exports/frontendExport.js")
 const plugins = Object.keys(frontendExport.plugins)
 
@@ -34,4 +35,23 @@ const run = () => {
   return scripts
 }
 
-module.exports = { run }
+const wsFunctions = {
+  startWSClient() {
+    // Check for previous auth data
+    const crId = window.localStorage.getItem("crId") || ""
+
+    // Init socket connection
+    window.CROWWWD.socket = new ReconnectingWebSocket(`ws://${window.location.host}/crId=${crId}`)
+    window.CROWWWD.socket.onopen = () => this.onWSOpen
+    window.CROWWWD.socket.onerror = (err) => this.onWSError(err)
+    window.CROWWWD.socket.onmessage = (msg) => this.onWSMessage(msg.data)
+  },
+  onWSOpen() {
+    console.log("WebSocket open")
+  },
+  onWSError() {
+    console.log(`WebSocket error: ${err}`)
+  },
+}
+
+module.exports = { run, wsFunctions }

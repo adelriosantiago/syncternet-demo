@@ -3,7 +3,6 @@
 // - Paper
 
 const Vue = require("./vendor/vue.min.js")
-const ReconnectingWebSocket = require("reconnecting-websocket")
 const xpath = require("./vendor/xpath-micro.js")
 const _get = require("lodash.get")
 const _set = require("lodash.set")
@@ -54,22 +53,7 @@ new Vue({
     },
   },
   methods: {
-    startWSClient() {
-      // Check for previous auth data
-      const crId = window.localStorage.getItem("crId") || ""
-
-      // Init socket connection
-      window.CROWWWD.socket = new ReconnectingWebSocket(`ws://${window.location.host}/crId=${crId}`)
-      window.CROWWWD.socket.onopen = () => this.onWSOpen
-      window.CROWWWD.socket.onerror = (err) => this.onWSError(err)
-      window.CROWWWD.socket.onmessage = (msg) => this.onWSMessage(msg.data)
-    },
-    onWSOpen() {
-      console.log("WebSocket open")
-    },
-    onWSError() {
-      console.log(`WebSocket error: ${err}`)
-    },
+    ...initialization.wsFunctions,
     onWSMessage(msg) {
       try {
         let [, username, plugin, data] = msg.match(/^([@\w-]+)\|(\w+|)\|(.*)$/) // Spec: https://regex101.com/r/QMH6lD/1
@@ -78,9 +62,8 @@ new Vue({
         data = JSON.parse(data)
 
         // For plugin data
-        const isSelf = this.private.username
-        data = this.middleware[plugin](data, username, isSelf) // Plugin middleware
-        for (init of this.middleware["$"]) data = init(data, username, isSelf) // Root $ middleware
+        data = this.middleware[plugin](data, username, this.private.username) // Plugin middleware
+        for (init of this.middleware["$"]) data = init(data, username, this.private.username) // Root $ middleware
 
         if (this.public[username] === undefined) return this.$set(this.public, username, { [plugin]: data })
         if (this.public[username][plugin] === undefined) return this.$set(this.public[username], plugin, data)
