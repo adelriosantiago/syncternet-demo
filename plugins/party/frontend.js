@@ -12,6 +12,15 @@ new Object({
           pic: "https://via.placeholder.com/150", // TODO: Improve so that it is not sent everytime
         }
 
+        clearTimeout(this.awayTimeout)
+        this.awayTimeout = setTimeout(() => {
+          this.wsSend("party", {
+            xpath: xpath(el),
+            status: window.CROWWWD.AWAY,
+            pic: "https://via.placeholder.com/150", // TODO: Improve so that it is not sent everytime
+          })
+        }, 5000)
+
         this.wsSend("party", newData)
       } catch (e) {
         console.log("Party error", e) // Ignore faulty messages
