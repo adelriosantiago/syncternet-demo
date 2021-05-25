@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="C.party.pos && C.party.pos.x && C.party.pos.y"
     class="absolute z-50 transition-all"
     style="pointer-events: none"
     :style="{'left': C.party.pos.x + 'px', 'top': C.party.pos.y + 'px' }"

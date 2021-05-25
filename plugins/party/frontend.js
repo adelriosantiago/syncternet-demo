@@ -1,27 +1,27 @@
 new Object({
   init: () => {
+    this.wsSend("party", {
+      xpath: "/html/body",
+      status: window.CROWWWD.ONLINE,
+      pic: "https://via.placeholder.com/150", // TODO: Improve so that it is not sent everytime
+    })
+
     document.onmouseover = (e) => {
       try {
         e = e || window.event
         const el = e.target || el.srcElement
 
         const rect = el.getBoundingClientRect()
-        const newData = {
-          xpath: xpath(el),
-          status: window.CROWWWD.ONLINE,
-          pic: "https://via.placeholder.com/150", // TODO: Improve so that it is not sent everytime
-        }
+        this.self.party.xpath = xpath(el)
+        this.self.party.status = window.CROWWWD.ONLINE
 
         clearTimeout(this.awayTimeout)
         this.awayTimeout = setTimeout(() => {
-          this.wsSend("party", {
-            xpath: xpath(el),
-            status: window.CROWWWD.AWAY,
-            pic: "https://via.placeholder.com/150", // TODO: Improve so that it is not sent everytime
-          })
+          this.self.party.status = window.CROWWWD.AWAY
+          this.sync("party")
         }, 5000)
 
-        this.wsSend("party", newData)
+        this.sync("party")
       } catch (e) {
         console.log("Party error", e) // Ignore faulty messages
       }

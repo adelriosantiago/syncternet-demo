@@ -9,7 +9,7 @@ const _set = require("lodash.set")
 const $ = require("./vendor/cash.min.js")
 const initialization = require("./initialization.js")
 
-const scripts = initialization.run(window)
+const plugins = initialization.run(window)
 
 // Initialize crowwwd engine
 new Vue({
@@ -28,26 +28,20 @@ new Vue({
   created() {},
   mounted() {
     this.startWSClient()
-
-    for (s of scripts) {
-      const obj = eval(s)
-
-      obj.init()
-      this.middleware["$"].push(obj.middleware["$"])
-      delete obj.middleware["$"]
-      Object.assign(this.middleware, obj.middleware)
-    }
-
-    for (init of this.middleware["$"]) init()
   },
   computed: {
+    self() {
+      return this.public[this.private.username]
+    },
     execSpecialAction() {
       return {
         "@keys": (data) => {
           data = JSON.parse(data)
           this.private.UUID = data.UUID
           this.private.username = data.username
+          this.$set(this.public, data.username, {})
           window.localStorage.setItem("crId", data.UUID)
+          this.onKeysReceived()
         },
       }
     },
@@ -65,13 +59,32 @@ new Vue({
         data = this.middleware[plugin](data, username, this.private.username) // Plugin middleware
         for (init of this.middleware["$"]) data = init(data, username, this.private.username) // Root $ middleware
 
-        if (this.public[username] === undefined) return this.$set(this.public, username, { [plugin]: data })
-        if (this.public[username][plugin] === undefined) return this.$set(this.public[username], plugin, data)
+        if (this.public[username] === undefined) return this.$set(this.public, username, { [plugin]: data }) // When a new user connects and it still doesn't exist in our public
 
         this.$set(this.public[username], plugin, data)
       } catch (e) {
         console.log("Invalid message", e) // Ignore faulty messages
       }
+    },
+    onKeysReceived() {
+      for (p of Object.entries(plugins)) {
+        const obj = eval(p[1])
+
+        // Create plugin data placeholder
+        this.$set(this.public[this.private.username], p[0], {})
+
+        // Populate middleware
+        this.middleware["$"].push(obj.middleware["$"])
+        delete obj.middleware["$"]
+        Object.assign(this.middleware, obj.middleware)
+
+        // Init plugin
+        obj.init()
+      }
+    },
+    sync(plugin, replace) {
+      if (!plugin) throw "Not yet implemented" // TODO
+      this.wsSend(plugin, this.self[plugin])
     },
     wsSend(plugin, data) {
       if (!this.private.UUID) return
