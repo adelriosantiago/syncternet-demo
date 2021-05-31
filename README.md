@@ -1,10 +1,9 @@
-# crowwwd-noot
+# crowwwd (no Operational Transform)
 
-The crowwwd-noot variant does not use operational transform by default. It merely shares incoming messages which is the core of crowwwd.
-
+Crowwwd shares gathers all users currently looking a webpage, allowing them to chat and interact. Crowwwd does not use Operational Transform by default. It merely shares incoming messages with other users.
 ### Server
 
-Users is stored in `users`  global variable. This variable maps UUID to usernames. Clients are never expected to know other UUID's then themselves. Example structure:
+Users are stored in the `users` global variable. This variable maps UUIDs to usernames. Clients are never expected to know other UUID's than themselves. Example structure:
 
 ``` json
 const users = {
@@ -15,7 +14,6 @@ const users = {
 ```
 
 A matching UUID and username is what makes an user an authenticated one. For this reason UUIDs should never be shared to the client.
-
 Public information about the each user for each plugin is stored in `public`. For example:
 
 ```js
@@ -42,17 +40,21 @@ const public = {
 }
 ```
 
-In the example above there are two users at two different locations on the page. *Note: Plugin data is not real. Actual positions are not stored in X, Y coordinates.*
+In the example above there are two users at two different locations on the page. *Note: Actual Party plugin positions are not stored in X, Y coordinates since each user has a different screen size.*
 
-Plugin definition is found in `plugins` variable:
+Private information about each user is stored in `private`. Not necessarily for secret data. It generally contains information to make the plugin work correctly. Private data is never shared to other users. Example:
 
 ```js
-const plugins = {
+const public = {
 	party: {
-        html: "<div>plugin html</div>",
-		created: "",
-        mounted: "",
-	},
+    	"jumping-dog-123": {
+            secondsIdle: 30
+        },
+    	"sleeping-cat-321": {
+            secondsIdle: 5
+        },
+	    // ... and so on for other users
+    },
     emoticons: {
     	// ... plugin data
     },
@@ -60,7 +62,23 @@ const plugins = {
 }
 ```
 
-When a new server is started we begin listening to the `msg` event. This is when a WS message is received. This may serve to update plugin data or for auth purposes. Each case is described below:
+---
+
+Plugin definition is found inside the plugins folder. Each folder is a plugin. Three files are defined:
+
+- template.html: Defines the plugin's HTML.
+- backend.js: Defines `init` and `middleware` functions that are executed on the server-side.
+- frontend.js: Defines `init` and `middleware` functions that are executed on the client-side.
+
+The `init` function is executed once when the plugin is loaded.
+
+The `middleware` function is executed each time a message is sent/received.
+
+---
+
+
+
+When a new server is started the server begins listening to `msg` event. Each case is described below:
 
 - - `"_new"` is received: This is a new user. Follow the steps,
 
@@ -134,9 +152,7 @@ In the steps above we checked for `localStorage["crowwwd:auth"]`. This variable 
 
 ## FAQ
 
-### Why client-server messages are not JSON?
 
-Because not using JSON is a little bit faster.
 
 ### ...
 

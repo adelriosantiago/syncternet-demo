@@ -18,6 +18,8 @@ const haikunator = new (require("haikunator"))({
 
 const backendExport = require("./exports/backendExport.js")
 
+const WS_MESSAGE = "message"
+const WS_CONNECTION = "connection"
 const WS_CONNECTING = 0
 const WS_OPEN = 1
 const WS_CLOSING = 2
@@ -59,7 +61,7 @@ const buildSync = (username, plugin) => {
 
 const init = (server) => {
   wsServer = new ws.Server({ server })
-  wsServer.on("connection", async (socket) => {
+  wsServer.on(WS_CONNECTION, async (socket) => {
     console.log("New client connected")
 
     // Create new session or continue an old one
@@ -77,7 +79,7 @@ const init = (server) => {
       sendAllToClient(socket)
     }
 
-    socket.on("message", (msg) => {
+    socket.on(WS_MESSAGE, (msg) => {
       let [, UUID, plugin, data] = msg.match(/^([@\w-]+)\|(\w+|)\|(.*)$/) // Spec: https://regex101.com/r/QMH6lD/1
       if (!UUID) return
       if (specialActions.includes(UUID)) return execSpecialAction[UUID](socket, data) // Special functions

@@ -8,7 +8,7 @@ new Object({
 
       const timestamp = new Date().getTime()
       this.self.shout[timestamp] = e.key
-      this.sync()
+      this.sync("shout")
 
       setTimeout(() => {
         delete this.self.shout[timestamp]
