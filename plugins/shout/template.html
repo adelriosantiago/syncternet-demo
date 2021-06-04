@@ -1,12 +1,16 @@
 <template>
   <div
-    v-if="C.party.pos && C.party.pos.x && C.party.pos.y"
+    v-if="P.party.pos && P.party.pos.x && P.party.pos.y"
     class="absolute z-50 transition-all"
     style="pointer-events: none"
-    :style="{'left': C.party.pos.x + 'px', 'top': C.party.pos.y + 'px' }"
+    :style="{'left': P.party.pos.x + 'px', 'top': P.party.pos.y + 'px' }"
   >
-    <span v-if="C.shout" class="text-sm text-white" style="background-color: rgba(0, 0, 0, 0.5); margin-top: 20px">
-      {{Object.values(C.shout).join('')}}
+    <span
+      v-if="P.shout"
+      class="text-sm text-white"
+      style="position: relative; background-color: rgba(0, 0, 0, 0.5); left: 4px; top: -10px"
+    >
+      {{Object.values(P.shout).join('')}}
     </span>
   </div>
 </template>

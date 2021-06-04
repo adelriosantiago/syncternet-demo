@@ -23,7 +23,7 @@ const run = () => {
     $("body").append("<div id='crowwwd'></div>")
 
     for (const p of Object.entries(frontendExport.plugins)) {
-      $("div#crowwwd").append(`<div v-for="(C, username) in public" :key="username">${p[1].html}</div>`)
+      $("div#crowwwd").append(`<div v-for="P in public">${p[1].html}</div>`)
       scripts[p[0]] = p[1].script
     }
   }
