@@ -1,4 +1,7 @@
 new Object({
+  private: {
+    newUsername: "",
+  },
   init: () => {
     this.send("party", {
       xpath: "/html/body",

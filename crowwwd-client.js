@@ -15,13 +15,14 @@ const plugins = initialization.run(window)
 new Vue({
   el: "div#crowwwd",
   data: {
-    // Realtime data, every user has a copy of this with the same contents
-    public: {},
-    // Local data, every user has it own data
-    private: {
+    auth: {
       UUID: "",
       username: "",
     },
+    // Realtime data, every user has a copy of this with the same contents
+    public: {},
+    // Local data, every user has it own data for each plugin
+    private: {},
     // Middleware
     middleware: { $: [] },
   },
@@ -31,14 +32,14 @@ new Vue({
   },
   computed: {
     self() {
-      return this.public[this.private.username]
+      return this.public[this.auth.username]
     },
     execSpecialAction() {
       return {
         "@keys": (data) => {
           data = JSON.parse(data)
-          this.private.UUID = data.UUID
-          this.private.username = data.username
+          this.auth.UUID = data.UUID
+          this.auth.username = data.username
           this.$set(this.public, data.username, {})
           window.localStorage.setItem("crId", data.UUID)
           this.onKeysReceived()
@@ -56,8 +57,8 @@ new Vue({
         data = JSON.parse(data)
 
         // For plugin data
-        data = this.middleware[plugin](data, username, this.private.username) // Plugin middleware
-        for (init of this.middleware["$"]) data = init(data, username, this.private.username) // Root $ middleware
+        data = this.middleware[plugin](data, username, this.auth.username) // Plugin middleware
+        for (init of this.middleware["$"]) data = init(data, username, this.auth.username) // Root $ middleware
 
         if (this.public[username] === undefined) return this.$set(this.public, username, { [plugin]: data }) // When a new user connects and it still doesn't exist in our public
 
@@ -71,7 +72,7 @@ new Vue({
         const obj = eval(p[1])
 
         // Create plugin data placeholder
-        this.$set(this.public[this.private.username], p[0], {})
+        this.$set(this.public[this.auth.username], p[0], {})
 
         // Populate middleware
         this.middleware["$"].push(obj.middleware["$"])
@@ -90,8 +91,8 @@ new Vue({
       this.send(plugin, this.self[plugin])
     },
     send(plugin, data) {
-      if (!this.private.UUID) return
-      window.CROWWWD.socket.send(this.private.UUID + "|" + plugin + "|" + JSON.stringify(data))
+      if (!this.auth.UUID) return
+      window.CROWWWD.socket.send(this.auth.UUID + "|" + plugin + "|" + JSON.stringify(data))
     },
   },
 })
