@@ -25,10 +25,9 @@ const run = () => {
     for (const p of Object.entries(frontendExport.plugins)) {
       // TODO: Move to a variable the next part
       $("div#crowwwd").append(`
-        <div style="position: fixed; top: 30px; left: 0px">
-          <p>Username: <input v-model="private.party.newUsername" /></p>
-          <button @click="private.party.setUsername">Set</button>
-          public: {{public}}
+        <div style="position: fixed; bottom: 10px; left: 0px; padding: 10px;">
+          <span><input placeholder="Set new username" v-model="private.party.newUsername" /></span>
+          <i class="fas fa-save" style="position: relative; color: black; left: -25px; top: 1px;" @click="private.party.setUsername"></i>
         </div>
         <div v-for="(P, username) in public">${p[1].html}</div>`)
       scripts[p[0]] = p[1].script

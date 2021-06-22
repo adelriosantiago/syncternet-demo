@@ -1,7 +1,8 @@
 new Object({
   private: {
-    newUsername: "newusername",
+    newUsername: "",
     setUsername: () => {
+      if (!this.private.party.newUsername) return // TODO: Show an error message?
       this.raw(
         "@changeUsername",
         "",
