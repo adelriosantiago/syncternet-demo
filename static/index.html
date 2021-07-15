@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="author" content="boydog" />
-    <title>boydog-noot</title>
+    <meta name="author" content="syncternet" />
+    <title>syncternet</title>
 
     <!-- Landing page resources -->
     <link rel="icon" href="./img/icon.png" />
@@ -71,252 +71,20 @@
       <header id="home" class="header">
         <section class="container">
           <img src="./img/main-logo-small.png" width="550" />
-          <a href="https://github.com/boydoglabs/boydog" title="boydog on Github" target="_blank">
-            <svg class="octocat" viewBox="0 0 250 250">
-              <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-              <path
-                class="octocat-arm"
-                d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
-              ></path>
-              <path
-                class="octocat-body"
-                d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
-              ></path>
-            </svg>
-          </a>
           <br />
-          <h3 class="description">Server-to-client two way binding using WebSockets</h3>
+          <h3 class="description">real-time collaborative web browsing</h3>
           <br />
-          <p>
-            BoyDog is a web framework based on Express.JS and ShareDB that allows you to<br />
-            build real-time collaborative webpages in 3 lines of code.
-          </p>
-          <p>Open this page in a second window or mobile phone and start interacting.</p>
+          <p>Open this page in a second window and start interacting real-time collaboratively with other users.</p>
         </section>
       </header>
 
       <section id="demos" class="container white">
         <div class="row">
           <div class="column">
-            <h3 class="title text-center">Examples</h3>
-            <br />
-
-            <p class="example-line">
-              BoyDog has a back-end scope, and a front-end scope in HTML. To make an input
-              <em>real-time collaborative</em> across all users who are viewing the page just create the variable in
-              back-end and bind it in front-end.
-            </p>
-
-            <div class="row">
-              <div class="column column-60">
-                <div class="tabs tabs_default">
-                  <div id="ex-1-boy">
-                    <span>
-                      <pre><code class="text-left">var scope = {
-  word: "starting word",
-};
-</code></pre>
-                    </span>
-                  </div>
-                  <div id="ex-1-dog">
-                    <pre><code class="text-left">&lt;input type="text" bd-value="word"&gt;</code></pre>
-                  </div>
-                  <ul class="horizontal">
-                    <li><a href="#ex-1-boy">back</a></li>
-                    <li><a href="#ex-1-dog">front</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="column">
-                <div class="example-spacer"></div>
-                <input type="text" placeholder="Write something" bd-value="word" bd-verbose="true" />
-              </div>
-            </div>
-
-            <p class="example-line">
-              The scope can have as many keys as you wish. Boydog will keep them all keep in sync using Operational
-              Transformations (OT):
-            </p>
-            <div class="row">
-              <div class="column column-60">
-                <div class="tabs tabs_default">
-                  <div id="ex-2-boy">
-                    <span>
-                      <pre><code class="text-left">var scope = {
-  word: "starting word",
-  title: "initial title",
-  subject: "random subject",
-};
-</code></pre>
-                    </span>
-                  </div>
-                  <div id="ex-2-dog">
-                    <pre><code class="text-left">&lt;input type="text" bd-value="word"&gt;
-&lt;input type="text" bd-value="title"&gt;
-&lt;input type="text" bd-value="subject"&gt;
-</code></pre>
-                  </div>
-                  <ul class="horizontal">
-                    <li><a href="#ex-1-boy">back</a></li>
-                    <li><a href="#ex-1-dog">front</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="column">
-                <div class="example-spacer"></div>
-                <input type="text" placeholder="Write something" bd-value="word" />
-                <input type="text" placeholder="Write something" bd-value="title" />
-                <input type="text" placeholder="Write something" bd-value="subject" />
-              </div>
-            </div>
-
-            <p class="example-line">More complex scopes are also valid. To bind them just write its full path:</p>
-            <div class="row">
-              <div class="column column-60">
-                <div class="tabs tabs_default">
-                  <div id="ex-3-boy">
-                    <span>
-                      <pre><code class="text-left">var scope = {
-  data: {
-    name: "John Doe",
-    address: "74 Henry Road",
-  }
-};
-</code></pre>
-                    </span>
-                  </div>
-                  <div id="ex-3-dog">
-                    <pre><code class="text-left">&lt;input type="text" bd-value="data.name"&gt;
-&lt;input type="text" bd-value="data.address"&gt;
-</code></pre>
-                  </div>
-                  <ul class="horizontal">
-                    <li><a href="#ex-1-boy">back</a></li>
-                    <li><a href="#ex-1-dog">front</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="column">
-                <div class="example-spacer"></div>
-                <input type="text" placeholder="Write something" bd-value="data.name" />
-                <input type="text" placeholder="Write something" bd-value="data.address" />
-              </div>
-            </div>
-
-            <p class="example-line">You can bind other attributes too:</p>
-            <div class="row">
-              <div class="column column-60">
-                <div class="tabs tabs_default">
-                  <div id="ex-4-boy">
-                    <span>
-                      <pre><code class="text-left">var scope = {
-  thing: "red"
-};
-</code></pre>
-                    </span>
-                  </div>
-                  <div id="ex-4-dog">
-                    <pre><code class="text-left">&lt;input type=&quot;text&quot; bd-value=&quot;thing&quot;&gt;
-&lt;blockquote bd-html=&quot;'The quote is: ' + thing&quot;&gt;&lt;/blockquote&gt;
-&lt;span bd-class=&quot;'my other classes ' + thing&quot;&gt;Try &quot;red&quot;, &quot;blue&quot; or &quot;italic blue&quot;&lt;/span&gt;
-&lt;img bd-src=&quot;'/img/' + thing + '.jpg'&quot /&gt;
-</code></pre>
-                  </div>
-                  <ul class="horizontal">
-                    <li><a href="#ex-1-boy">back</a></li>
-                    <li><a href="#ex-1-dog">front</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="column">
-                <div class="example-spacer"></div>
-                <input type="text" placeholder="Write something" bd-value="thing" />
-                <!-- TODO: Enable this again, for some reason href it is not working -->
-                <!-- <p>As an href: <a bd-href="thing">Try "http://boy.dog"</a></p> -->
-                <blockquote bd-html="'The quote HTML is: ' + thing"></blockquote>
-                <div class="class-example">
-                  <span bd-class="'my other classes ' + thing">As a class. Try "red", "blue" or "italic blue".</span>
-                </div>
-                <br />
-                <p>As a src (cats are called "red", "blue", "yellow", "bold" and "italic"):</p>
-                <img
-                  onerror="this.src='https://via.placeholder.com/200x100'"
-                  bd-src="'/img/' + thing + '.jpg'"
-                  width="200px"
-                  height="100px"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <p class="example-line">Scope changes from the server are also broadcasted to all connected users:</p>
-        <div class="row">
-          <div class="column column-60">
-            <div class="tabs tabs_default">
-              <div id="ex-5-boy">
-                <span>
-                  <pre><code class="text-left">var scope = {
-  number: 0
-};
-
-setInterval(() => {
-  scope.number = String(Math.random())
-}, 1000)
-</code></pre>
-                </span>
-              </div>
-              <div id="ex-5-dog">
-                <pre><code class="text-left">&lt;p bd-html=&quot;'Random number: ' + number&quot;&gt;&lt;/p&gt;
-</code></pre>
-              </div>
-              <ul class="horizontal">
-                <li><a href="#ex-1-boy">back</a></li>
-                <li><a href="#ex-1-dog">front</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="column">
-            <div class="example-spacer"></div>
-            <p bd-html="'Number: ' + number"></p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="column">
             <h3 class="title text-center">Getting started</h3>
             <br />
             <div class="row">
-              <div class="column">
-                <p>Install <em>boydog</em>:</p>
-                <pre><code class="text-left">npm install --save boydog</code></pre>
-                <p>Init boydog in your Express server:</p>
-                <pre><code class="text-left steps"><span class="washed">const express = require("express")</span>
-const boydog = require("boydog")
-
-<span class="washed">const app = express()</span>
-<span class="washed">app.all("/", (req, res) => { /* My routes */ })</span>
-<span class="washed">const server = app.listen(8080)</span>
-
-let scope = {
-  name: "John Doe",
-}
-boydog.init(scope, server)
-</code></pre>
-                <p>
-                  Finally, bind your scope variables. Don't forget to load <em>boydog-client</em> before the closing
-                  body tag:
-                </p>
-                <pre><code class="text-left steps"><span class="washed">&lt;body&gt</span>
-  &lt;input type="text" bd-value="name"&gt;
-  
-  &lt;script src="./boydog-client"&gt;&lt;/script&gt;
-  &lt;script&gt;
-    boydog.init() // Or `boydog.init("#my_div", "my_host:9090")` for a custom scope and host
-  &lt;/script&gt;
-<span class="washed">&lt;/body&gt</span>
-</code></pre>
-              </div>
+              <div class="column">qweqweqwe</div>
             </div>
           </div>
         </div>
@@ -325,14 +93,14 @@ boydog.init(scope, server)
         <br />
         <div class="row text-center">
           <div class="column">
-            <i class="fa fa-2x fa-caret-square-o-right"></i>
+            <i class="fa fa-2x fa-server"></i>
             <p>
-              The <a href="https://github.com/boydoglabs/boydog-demo" title="demo page">boydog-demo</a> page (this page)
+              <p>111</p>
             </p>
           </div>
           <div class="column">
             <i class="fa fa-2x fa-server"></i>
-            <p>The <a href="https://github.com/boydoglabs/boydog" title="Contributing">boydog</a> NPM module.</p>
+            <p>222</p>
           </div>
         </div>
       </section>
@@ -341,8 +109,8 @@ boydog.init(scope, server)
         <section class="container">
           <img src="./img/small-main-logo.png" width="120" />
           <p>
-            <a class="boydoglabs-link" target="_blank" href="https://github.com/boydoglabs/" title="BoyDogLabs"
-              >BoyDogLabs</a
+            <a target="_blank" href="#" title="syncternet"
+              >syncternet</a
             >
             © 2020
           </p>
@@ -350,7 +118,7 @@ boydog.init(scope, server)
       </footer>
     </main>
 
-    <!-- Crowwwd bundle -->
+    <!-- Syncternet bundle -->
     <script src="./dist/crowwwd-client.bundle.js"></script>
   </body>
 </html>
