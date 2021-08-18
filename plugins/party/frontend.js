@@ -4,7 +4,7 @@ new Object({
     this.send("party", {
       xpath: "/html/body",
       status: window.CROWWWD.ONLINE,
-      pic: "https://via.placeholder.com/150", // TODO: Improve so that it is not sent everytime
+      pic: `/img/${Math.round(Math.random() * 9)}.jpg`, // TODO: Improve so that it is not sent everytime
     })
 
     document.addEventListener("mouseover", (e) => {

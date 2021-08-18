@@ -1,17 +1,18 @@
 <template>
-  <div v-for="path in Object.keys(P.shout.messages)">
-    <div
-      class="absolute z-50"
-      style="pointer-events: none"
-      :style="{'left': P.shout.messages[path].pos.x + 'px', 'top': P.shout.messages[path].pos.y + 'px' }"
-    >
-      <span
-        v-if="P.shout"
-        class="text-sm text-white"
-        style="position: relative; background-color: rgba(0, 0, 0, 0.5); left: 4px; top: -10px"
+  <div v-if="P.shout">
+    <div v-for="path in Object.keys(P.shout.messages)">
+      <div
+        class="absolute z-50"
+        style="pointer-events: none"
+        :style="{'left': P.shout.messages[path].pos.x + 'px', 'top': P.shout.messages[path].pos.y + 'px' }"
       >
-        {{username}}: {{Object.values(P.shout.messages[path].txt).join('')}}
-      </span>
+        <span
+          class="text-sm text-white"
+          style="position: relative; background-color: rgba(0, 0, 0, 0.5); left: 4px; top: -10px"
+        >
+          {{username}}: {{Object.values(P.shout.messages[path].txt).join('')}}
+        </span>
+      </div>
     </div>
   </div>
 </template>

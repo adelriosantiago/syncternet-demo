@@ -1,6 +1,6 @@
 <template>
   <!-- TODO: Try adding a <script> tag to this with document.onmousemove -->
-  <div>
+  <div v-if="P.party">
     <div
       v-if="P.party.pos && P.party.pos.x && P.party.pos.y"
       class="absolute z-50 transition-all"
@@ -8,12 +8,7 @@
       :style="{'left': P.party.pos.x + 'px', 'top': P.party.pos.y + 'px' }"
     >
       <!-- Upcoming feature -->
-      <img
-        v-if="false"
-        class="inline-block object-cover w-12 h-12 rounded-full"
-        :src="P.party.pic"
-        :alt="auth.username"
-      />
+      <img class="inline-block object-cover w-12 h-12 rounded-full" :src="P.party.pic" :alt="auth.username" />
       <div v-else class="inline-block">
         <div v-if="P.party.wayOut === 'DOWN'">
           <i class="fas fa-chevron-down"></i>
