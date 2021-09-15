@@ -59,7 +59,7 @@ const wsFunctions = {
     console.log("WebSocket open")
   },
   onWSError(err) {
-    console.log(`WebSocket error: ${err}`)
+    console.log("WebSocket error", err)
   },
 }
 
