@@ -8,7 +8,7 @@
       :style="{'left': P.party.pos.x + 'px', 'top': P.party.pos.y + 'px' }"
     >
       <!-- Upcoming feature -->
-      <img class="inline-block object-cover w-12 h-12 rounded-full" :src="P.party.pic" :alt="auth.username" />
+      <img class="inline-block object-cover w-20 h-20 rounded-full" :src="P.party.pic" :alt="auth.username" />
       <div v-else class="inline-block">
         <div v-if="P.party.wayOut === 'DOWN'">
           <i class="fas fa-chevron-down"></i>
@@ -23,9 +23,7 @@
         :class="{'bg-green-600': P.party.status === CROWWWD.ONLINE, 'bg-yellow-600': P.party.status === CROWWWD.AWAY, 'bg-gray-600': P.party.status === undefined}"
       ></span>
       <i class="fas fa-mobile-alt" v-show="P.party.isMobile" style="color: deepskyblue"></i>
-      <span class="text-sm text-white" style="background-color: rgba(0, 0, 0, 0.5)"
-        >{{username}} ({{P.party.percent}})</span
-      >
+      <span class="text-white" style="background-color: rgba(0, 0, 0, 0.5)">{{username}} ({{P.party.percent}})</span>
     </div>
   </div>
 </template>
