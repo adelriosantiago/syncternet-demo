@@ -82,6 +82,7 @@ new Object({
         }
       }
 
+      // TODO: No longer working it seems
       if (data.pos.y > scrollY + innerHeight) {
         data.wayOut = "DOWN"
         data.pos.y = scrollY + innerHeight - 40
