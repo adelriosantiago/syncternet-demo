@@ -50,7 +50,7 @@ const wsFunctions = {
     const username = window.localStorage.getItem("crowwwd:username") || ""
 
     // Init socket connection
-    window.CROWWWD.socket = new ReconnectingWebSocket(`ws://${window.location.host}/?UUID=${UUID}&username=${username}`)
+    window.CROWWWD.socket = new ReconnectingWebSocket(`ws://localhost:7777/?UUID=${UUID}&username=${username}`)
     window.CROWWWD.socket.onopen = () => this.onWSOpen
     window.CROWWWD.socket.onerror = (err) => this.onWSError(err)
     window.CROWWWD.socket.onmessage = (msg) => this.onWSMessage(msg.data)
