@@ -4,7 +4,12 @@ Crowwwd shares gathers all users currently looking a webpage, allowing them to c
 
 ## Development
 
- - Run `npm install`
+ - `npm install`
+ - `npm run dev`
+
+The dev command should build the front-end automatically, otherwise you may need to run a `build*` command
+
+## How it works
 
 ### Server
 
