@@ -1,6 +1,11 @@
 # crowwwd (no Operational Transform)
 
 Crowwwd shares gathers all users currently looking a webpage, allowing them to chat and interact. Crowwwd does not use Operational Transform by default. It merely shares incoming messages with other users.
+
+## Development
+
+ - Run `npm install`
+
 ### Server
 
 Users are stored in the `users` global variable. This variable maps UUIDs to usernames. Clients are never expected to know other UUID's than themselves. Example structure:
