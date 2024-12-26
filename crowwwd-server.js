@@ -1,7 +1,3 @@
-// - Rock
-// -> Plastic
-// - Paper
-
 const fs = require("fs")
 const ws = require("ws")
 const _pick = require("lodash.pick")
@@ -79,24 +75,30 @@ const init = (server) => {
     sendAllToClient(socket) // Send all existing public data at the beginning
 
     socket.on(WS_MESSAGE, (msg) => {
-      let [, UUID, plugin, data] = msg.match(/^([@\w-]+)\|(\w+|)\|(.*)$/) // Spec: https://regex101.com/r/QMH6lD/1
-      if (!UUID) return
-      if (specialActions.includes(UUID)) return execSpecialAction[UUID](socket, data) // Special functions
-      data = JSON.parse(data)
+      try {
+        msg = msg.toString()
 
-      // For plugin data
-      if (public[UUID] === undefined) public[UUID] = {}
-      if (private[UUID] === undefined) private[UUID] = {}
-      data = backendExport.plugins[plugin].middleware["$"](
-        data,
-        buildSync(users[UUID], plugin),
-        UUID,
-        private[UUID],
-        public[UUID]
-      )
-      Object.assign(public[UUID], { [plugin]: data })
+        let [, UUID, plugin, data] = msg.match(/^([@\w-]+)\|(\w+|)\|(.*)$/) // Spec: https://regex101.com/r/QMH6lD/1
+        if (!UUID) return
+        if (specialActions.includes(UUID)) return execSpecialAction[UUID](socket, data) // Special functions
+        data = JSON.parse(data)
 
-      broadcastData(users[UUID], plugin, JSON.stringify(data))
+        // For plugin data
+        if (public[UUID] === undefined) public[UUID] = {}
+        if (private[UUID] === undefined) private[UUID] = {}
+        data = backendExport.plugins[plugin].middleware["$"](
+          data,
+          buildSync(users[UUID], plugin),
+          UUID,
+          private[UUID],
+          public[UUID]
+        )
+        Object.assign(public[UUID], { [plugin]: data })
+
+        broadcastData(users[UUID], plugin, JSON.stringify(data))
+      } catch (e) {
+        console.log("Invalid message", e) // Ignore faulty messages
+      }
     })
   })
 }

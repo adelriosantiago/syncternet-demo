@@ -1,7 +1,3 @@
-// - Rock
-// -> Plastic
-// - Paper
-
 const Vue = require("./vendor/vue.min.js")
 const xpath = require("./vendor/xpath-micro.js")
 const _get = require("lodash.get")
@@ -58,6 +54,8 @@ new Vue({
     ...initialization.wsFunctions,
     onWSMessage(msg) {
       try {
+        msg = msg.toString()
+        
         let [, username, plugin, data] = msg.match(/^([@\w-]+)\|(\w+|)\|(.*)$/) // Spec: https://regex101.com/r/QMH6lD/1
         if (!username) return
         if (window.CROWWWD.specialActions.includes(username)) return this.execSpecialAction[username](data)
