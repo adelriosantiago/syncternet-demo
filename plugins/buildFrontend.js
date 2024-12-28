@@ -2,13 +2,12 @@ const fs = require("fs")
 const tailwindScoped = fs.readFileSync("./vendor/tailwind.min.css", { encoding: "utf8", flag: "r" })
 const listdirs = require("listdirs")
 
-// TODO: Use async
-listdirs("./plugins", function callback(err, plugins) {
-  if (err) {
-    console.log(err) // handle errors in your preferred way.
-  } else {
-    plugins.shift()
-    plugins = plugins.map((f) => f.match(/\w+$/g)[0]) // TODO: Simplify
+listdirs(
+  "./plugins",
+  (callback = (err, plugins) => {
+    if (err) return console.info("Unable to list plugins to build", plugins)
+
+    plugins = plugins.slice(1).map((f) => f.match(/\w+$/g)[0])
 
     let frontendExport = {
       style: tailwindScoped,
@@ -22,5 +21,5 @@ listdirs("./plugins", function callback(err, plugins) {
       }
       fs.writeFileSync("./exports/frontendExport.js", `module.exports = ${JSON.stringify(frontendExport)}`)
     }
-  }
-})
+  })
+)
