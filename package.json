@@ -1,41 +1,29 @@
 {
-  "name": "boydog-noot",
-  "version": "0.0.0",
-  "description": "boydog-noot",
+  "name": "syncternet-demo",
+  "version": "1.0.0",
+  "description": "Syncternet demo page showcasing the Syncternet NPM package. This project is also a good starting point to develop Syncternet plugins.",
+  "author": "www.adelriosantiago.com",
+  "license": "MIT",
   "main": "server.js",
   "scripts": {
     "start": "node ./server.js",
-    "build": "browserify ./crowwwd-client.js -o ./static/dist/crowwwd-client.bundle.js",
-    "build:tailwind": "postcss tailwind.source.css -o vendor/tailwind.min.css",
-    "build:frontend": "node ./plugins/buildFrontend.js",
-    "serve": "run-s build:frontend build start",
-    "dev": "nodemon --exec \"npm run serve\""
+    "dev": "nodemon --exec \"npm run serve\"",
+    "serve": "run-s build start"
   },
-  "author": "BoyDog (www.boy.dog)",
-  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.20.3",
     "express": "^4.21.2",
-    "lodash.get": "^4.4.2",
-    "lodash.set": "^4.3.2",
-    "reconnecting-websocket": "^4.4.0",
-    "uptill": "^1.0.1",
-    "ws": "^8.18.0"
+    "syncternet": "file:./dev_modules/syncternet",
+    "uptill": "^1.0.1"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.20",
     "browserify": "^17.0.1",
     "cheerio": "^1.0.0-rc.5",
-    "cssnano": "^7.0.6",
-    "haikunator": "^2.1.2",
     "listdirs": "^3.1.1",
-    "lodash.topath": "^4.5.2",
-    "mustache": "^4.2.0",
     "nodemon": "^3.1.9",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.49",
     "postcss-cli": "^11.0.0",
-    "tailwindcss": "^3.4.17",
     "url": "^0.11.4",
     "uuid": "^11.0.3",
     "vue": "^3.5.13"

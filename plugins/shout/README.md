@@ -1,1 +1,0 @@
-Shout plugin allows people to type anywhere on the page to create text bubbles to communicate with others.
