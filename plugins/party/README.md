@@ -1,1 +1,0 @@
-Party is the plugin that shows people's icon around the screen.
