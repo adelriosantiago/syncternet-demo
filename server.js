@@ -9,15 +9,11 @@ app.use(express.static("static"))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.get("/debug", (req, res) => {
-  return res.json(syncternet.store().public)
-})
-
 // Init server
 const server = http.createServer(app)
 server.listen(port, () => {
-  console.log(`Listening on http://localhost:${port}`)
+  console.info(`Listening on http://localhost:${port}`)
 })
 
-// Init crowwwd TODO: Extract public and users data
+// Init syncternet
 syncternet.init(server)
