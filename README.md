@@ -6,14 +6,16 @@ Syncternet allows you to interact with other users on the same page. It is a rea
 
 ## Test the demo
 
-1.- TBD
-2.- TBD
+1. Go to www.syncternet.com.
+2. Open the page in your phone and/or or in another browser (use a Private Mode to allow creating a new session).
+3. See other people around the page and interact with them.
 
 ## Add Syncternet to your own project
 
-1.- Install the package with `npm install syncternet`.
-2.- Load the script in the front-end with `<script src="/syncternet/client"></script>`, this route is injected to the Express app when the module is loaded.
-3.- Initialize the server with `const syncternet = require('syncternet')` and `syncternet.init(app)`, where `app` is your Express app.
+1. Install the package with `npm install syncternet`.
+2. Load the script in the front-end with `<script src="/syncternet/client"></script>`, this route is injected to the Express app when the module is loaded.
+3. Initialize the server with `const syncternet = require('syncternet')` and `syncternet.init(app)`, where `app` is your Express app.
+
 
 ## Develop your own plugins
 
