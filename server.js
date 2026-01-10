@@ -1,5 +1,4 @@
 const port = 3091
-const http = require("http")
 const express = require("express")
 const bodyParser = require("body-parser")
 const syncternet = require("syncternet")
@@ -10,8 +9,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // Init server
-const server = http.createServer(app)
-server.listen(port, () => {
+const server = app.listen(port, () => {
   console.info(`Listening on http://localhost:${port}`)
 })
 
