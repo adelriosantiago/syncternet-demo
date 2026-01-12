@@ -14,4 +14,4 @@ const server = app.listen(port, () => {
 })
 
 // Init syncternet
-syncternet.init(server)
+syncternet.init(server, app)
