@@ -4,6 +4,7 @@
   "description": "Syncternet demo page showcasing the Syncternet NPM package. This project is also a good starting point to develop Syncternet plugins.",
   "author": "www.adelriosantiago.com",
   "license": "MIT",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node ./server.js",
