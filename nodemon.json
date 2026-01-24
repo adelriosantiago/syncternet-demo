@@ -2,6 +2,13 @@
   "delay": "100",
   "ext": "js,html",
   "ignoreRoot": [".git"],
-  "ignore": ["./dev_modules/syncternet/exports/*"],
-  "watch": ["./*.js", "./dev_modules/*"]
+  "ignore": [
+    "**/node_modules/**",
+    "./dev_modules/syncternet/exports/**"
+  ],
+  "watch": [
+    "./*.js",
+    "./dev_modules/syncternet/plugins",
+    "./dev_modules/syncternet/*.js"
+  ]
 }
