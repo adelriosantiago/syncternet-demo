@@ -1,0 +1,3 @@
+www.syncternet.com, syncternet.com {
+	reverse_proxy localhost:3091
+}
