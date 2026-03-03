@@ -1,6 +1,6 @@
 {
   "name": "syncternet-demo",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Syncternet demo page showcasing the Syncternet NPM package. This project is also a good starting point to develop Syncternet plugins.",
   "author": "www.adelriosantiago.com",
   "license": "MIT",
