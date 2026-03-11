@@ -7,10 +7,11 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node ./server.js",
+    "start": "pm2 start ecosystem.config.cjs",
     "dev": "nodemon --exec \"npm run serve\"",
-    "serve": "run-s build:client start",
-    "build:client": "npm run build:client --prefix ./dev_modules/syncternet"
+    "build": "run-s build:client build:server",
+    "build:client": "npm run build:client --prefix ./dev_modules/syncternet",
+    "build:server": "echo \"No server build step required\""
   },
   "devDependencies": {
     "body-parser": "^2.2.1",
